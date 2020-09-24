@@ -10,10 +10,10 @@
         android:label="fragment_ingredient"
         tools:layout="@layout/fragment_ingredient" />
     <fragment
-        android:id="@+id/spiceFragment"
-        android:name="com.example.smartfridge.SpiceFragment"
-        android:label="fragment_spice"
-        tools:layout="@layout/fragment_spice" />
+        android:id="@+id/profileFragment"
+        android:name="com.example.smartfridge.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/scanFragment"
         android:name="com.example.smartfridge.ScanFragment"
