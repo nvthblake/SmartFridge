@@ -9,9 +9,9 @@ public class TaskProvider {
         String sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='"+table+"'";
         Cursor mCursor = db.rawQuery(sql, null);
         if (mCursor.getCount() > 0) {
-            return false;
+            return false;  // Table does exist on database. Return False
         }
         mCursor.close();
-        return true;
+        return true;  // Table does not exist on database. Return True
     }
 }

@@ -45,12 +45,31 @@ public class MainActivity extends AppCompatActivity {
         // Initiate database
         try {
             SQLiteDatabase sqLiteDatabase = this.openOrCreateDatabase("smartfridge", MODE_PRIVATE, null);
-            sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR)");
+
+            // Create schema for table that saves user's food inventory
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
             {
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID) VALUES ('strawberry',3, 'box', 'strawberry.png')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID) VALUES ('steak',2, 'lbs', 'steak.png')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID) VALUES ('asparagus',1, 'bunch', 'asparagus.png')");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate DATE)");
+            }
+
+            // Create schema and data for table that saves ingredients within app's inventory
+            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimIngredient"))
+            {
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimIngredient (ID INTEGER PRIMARY KEY, IngredientName VARCHAR, Category VARCHAR, Perishable INT, EstimatedPerishDay INT(4))");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground cinnamon', 'Condiment', 0, NULL)");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('eggs', 'Meat', 1, 14)");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground beef', 'Meat', 1, 14)");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('strawberry', 'Fruit', 1, 5)");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('steak', 'Meat', 1, 14)");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('asparagus', 'Vegetable', 1, 5)");
+                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('peach', 'Fruit', 1, 10)");
+            }
+
+            // Create schema and data for table that saves recipes within app's inventory
+            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimRecipe")) {
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (ID INTEGER PRIMARY KEY, Title VARCHAR, SourceName VARCHAR, ReadyInMinutes INT(3), Servings INT(2), SourceUrl VARCHAR)");
+                sqLiteDatabase.execSQL("INSERT INTO DimRecipe (Title, SourceName, ReadyInMinute, Servings, SourceUrl) VALUES ('400-Calorie Breakfasts Peach Parfait ','Martha Stewart',7,1,'http://www.prevention.com/food/healthy-recipes/400-calorie-breakfasts?s=6')");
+                sqLiteDatabase.execSQL("INSERT INTO DimRecipe (Title, SourceName, ReadyInMinute, Servings, SourceUrl) VALUES ('Sloppy Joe Casserole','Cravings of a Lunatic',30,6,'http://www.cravingsofalunatic.com/2013/10/sloppy-joe-casserole.html')");
             }
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM FactFridge", null);
