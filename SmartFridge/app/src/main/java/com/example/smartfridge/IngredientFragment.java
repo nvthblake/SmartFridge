@@ -1,5 +1,6 @@
 package com.example.smartfridge;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +16,13 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class IngredientFragment extends Fragment {
+    GridView gridView;
+    String[] name = new String[]{"Steak", "Carrot", "Onion", "Mushroom", "Chicken", "Shit", "Rice","Carrot","Carrot","Carrot","Carrot","Carrot","Carrot","Carrot","Carrot"};
+    int[] image = new int[]{R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50,
+            R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50,
+            R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50, R.drawable.ic_baseline_fastfood_50,};
+    int[] expDate = new int[]{5, 8, 3, 4, 10, 6, 1, 1, 1, 1, 1, 1, 1, 1, 1,};
+    int[] qty = new int[]{1, 2, 3, 10, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,};
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,12 +62,18 @@ public class IngredientFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_ingredient, container, false);
+
+        gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+        gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ingredient, container, false);
+        return view;
     }
 }
