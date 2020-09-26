@@ -183,9 +183,6 @@ public class ScanFragment extends Fragment {
                     date.setText(current);
                     date.setSelection(sel < current.length() ? sel : current.length());
                     expStr = date.getText().toString();
-//                    expDate = expStr.substring(0, 2);
-//                    expMonth = expStr.substring(3, 2);
-//                    expYear = expStr.substring(6, 4);
 
                 }
             }
