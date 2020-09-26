@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TaskProvider taskProvider = null;
+        TaskProvider taskProvider = new TaskProvider();
 
         // Navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
             sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR)");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
             {
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID) VALUES ('strawberry',3, 'box', 'strawberry.png')");
                 sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID) VALUES ('steak',2, 'lbs', 'steak.png')");
                 sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID) VALUES ('asparagus',1, 'bunch', 'asparagus.png')");
             }
