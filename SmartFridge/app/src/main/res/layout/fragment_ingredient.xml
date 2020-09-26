@@ -50,7 +50,7 @@
                     android:text="All" />
 
                 <Button
-                    android:id="@+id/btnVegetables"
+                    android:id="@+id/btnVegetable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"

@@ -40,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
             SQLiteDatabase sqLiteDatabase = this.openOrCreateDatabase("smartfridge", MODE_PRIVATE, null);
 
             // Create schema for table that saves user's food inventory
-//            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
+            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
             {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate VARCHAR)");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('strawberry',3, 'box', 'strawberry.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('steak',2, 'lbs', 'steak.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('asparagus',1, 'bunch', 'asparagus.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('peach',1, 'fruit', 'peach.png', 1, '30/09/2020')");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate VARCHAR, Category VARCHAR)");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('strawberry',3, 'box', 'strawberry.png', 1, '30/09/2020', 'Fruit')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('steak',2, 'lbs', 'steak.png', 1, '30/09/2020', 'Meat')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('asparagus',1, 'bunch', 'asparagus.png', 1, '30/09/2020', 'Vegetable')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('peach',1, 'fruit', 'peach.png', 1, '30/09/2020', 'Fruit')");
             }
 
             // Create schema and data for table that saves ingredients within app's inventory
@@ -71,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create view showing all items expiring within 3 days
-            sqLiteDatabase.execSQL("DROP VIEW ItemsExpDays");
-            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, TimeDelta, ImageID, Amount) AS SELECT IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageID, Amount FROM FactFridge WHERE InFridge = 1;");
+//            sqLiteDatabase.execSQL("DROP VIEW ItemsExpDays");
+            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, TimeDelta, ImageID, Amount, Category) AS SELECT IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageID, Amount, Category FROM FactFridge WHERE InFridge = 1;");
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExpDays", null);
             int IngredientNameIndex = c.getColumnIndex("IngredientName");
