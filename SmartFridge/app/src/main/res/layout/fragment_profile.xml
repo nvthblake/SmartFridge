@@ -18,26 +18,19 @@
             android:layout_height="150dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
-            android:src="@drawable/ava"
+            android:src="@drawable/addimage"
             app:civ_border_width="0dp" />
 
         <TextView
-            android:layout_width="200dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
-            android:text="Hello, Jess!"
+            android:text="Welcome to SmartFridge"
             android:textAlignment="center"
             android:textStyle="bold"
             android:textSize="30dp"
             android:gravity="center_horizontal" />
-
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="0dp"
-            app:srcCompat="@drawable/menu" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/memberCardView1"
@@ -69,12 +62,25 @@
                     android:layout_height="40dp"
                     app:srcCompat="@drawable/fridge2" />
 
+                <ProgressBar
+                    android:id="@+id/pBar"
+                    android:layout_height="wrap_content"
+                    android:layout_width="250dp"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:max="100"
+                    android:indeterminate="false"
+                    android:progress="50"
+                    android:layout_weight="1"
+                    android:progressDrawable="@drawable/rounded_corners_progress_bar"
+                    />
 
             </LinearLayout>
             <TextView
+                android:id="@+id/tView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Your fridge is still full!"
                 android:textSize="12dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="100dp"
@@ -104,31 +110,43 @@
                 android:layout_marginTop="170dp"
                 android:orientation="horizontal">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/background"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@color/colorPrimary" />
+<!--                <de.hdodenhof.circleimageview.CircleImageView-->
+<!--                    xmlns:app="http://schemas.android.com/apk/res-auto"-->
+<!--                    android:layout_width="70dp"-->
+<!--                    android:layout_height="70dp"-->
+<!--                    android:src="@drawable/background"-->
+<!--                    app:civ_border_width="2dp"-->
+<!--                    app:civ_border_color="@color/colorPrimary" />-->
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <TextView
+                    android:id="@+id/exp3DTextView"
                     android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/background"
-                    android:layout_marginLeft="50dp"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@color/colorPrimary" />
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_textview"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                <TextView
+                    android:id="@+id/exp10DTextView"
                     android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:src="@drawable/background"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_textview"
                     android:layout_marginLeft="50dp"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@color/colorPrimary" />
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
+
+                <TextView
+                    android:id="@+id/expNegDTextView"
+                    android:layout_width="70dp"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rounded_textview"
+                    android:layout_marginLeft="50dp"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
+
             </LinearLayout>
 
             <LinearLayout

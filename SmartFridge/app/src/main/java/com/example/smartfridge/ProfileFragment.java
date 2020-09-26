@@ -1,12 +1,25 @@
 package com.example.smartfridge;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -14,6 +27,17 @@ import android.view.ViewGroup;
  * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment {
+
+    // variable declarations
+    private CircleImageView ProfileImage;
+    private static final int PICK_IMAGE = 1;
+    Uri imageUri;
+    private ProgressBar pgsBar;
+    private TextView txtView;
+    int status;
+    String text;
+
+    SQLiteDatabase sqLiteDatabase;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -45,7 +69,7 @@ public class ProfileFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+    // functions declarations
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +82,68 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_profile, container, false);
+        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
+
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        // Access gallery
+
+        TextView exp3DTextView = (TextView) view.findViewById(R.id.exp3DTextView);
+        TextView exp10DTextView = (TextView) view.findViewById(R.id.exp10DTextView);
+        TextView expNegDTextView = (TextView) view.findViewById(R.id.expNegDTextView);
+
+
+        String sql3D = "SELECT TimeDelta FROM ItemsExpDays WHERE TimeDelta <= 4";
+        Cursor mCursor3d = sqLiteDatabase.rawQuery(sql3D, null);
+        exp3DTextView.setText(Integer.toString(mCursor3d.getCount()));
+        mCursor3d.close();
+
+        String sql10D = "SELECT TimeDelta FROM ItemsExpDays WHERE TimeDelta <= 11";
+        Cursor mCursor10d = sqLiteDatabase.rawQuery(sql10D, null);
+        exp10DTextView.setText(Integer.toString(mCursor10d.getCount()));
+        mCursor10d.close();
+
+        String sqlNegD = "SELECT TimeDelta FROM ItemsExpDays WHERE TimeDelta <= 1";
+        Cursor mCursorNegD = sqLiteDatabase.rawQuery(sqlNegD, null);
+        expNegDTextView.setText(Integer.toString(mCursorNegD.getCount()));
+        mCursorNegD.close();
+
+
+        ProfileImage = (CircleImageView) view.findViewById(R.id.profile_image);
+        ProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent gallery = new Intent();
+                gallery.setType("image/*");
+                gallery.setAction(Intent.ACTION_GET_CONTENT);
+
+                startActivityForResult(Intent.createChooser(gallery, "Selected Picture"), PICK_IMAGE);
+            }
+        });
+
+        // Update Fridge status
+        pgsBar = (ProgressBar) view.findViewById(R.id.pBar);
+        txtView = (TextView) view.findViewById(R.id.tView);
+        status = pgsBar.getProgress();
+        text = "Your fridge is " + Integer.toString(status) + "% full";
+        txtView.setText(text);
+        return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE) {
+            imageUri = data.getData();
+
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getApplicationContext().getContentResolver(), imageUri);
+                ProfileImage.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

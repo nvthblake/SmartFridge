@@ -1,6 +1,7 @@
 package com.example.smartfridge;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartfridge.Objects.MealAdapter;
 import com.example.smartfridge.Objects.MealData;
+import c;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import org.json.JSONArray;
+
+import java.io.IOException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -70,16 +80,56 @@ public class RecipeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        // GET request to find recipes by ingredients
+        get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number=5&ranking=1&ignorePantry=false&ingredients=apples%252Cflour%252Csugar", "", new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                Log.d("----Rest Response Fail", e.toString());
+            }
+            @Override
+            public void onResponse(Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseStr = response.body().string();
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    Log.d("----Rest Response", responseStr);
+                } else {
+                    Log.d("----Rest Response Fail", response.toString());
+                }
+            }
+        });
+
         // Generate meal planner
         MealData[] mealData = new MealData[]{
                 new MealData("meal1", "descp1", R.drawable.ava),
+                new MealData("meal2", "descp2", R.drawable.ava),
+                new MealData("meal1", "descp1", R.drawable.ava),
+                new MealData("meal2", "descp2", R.drawable.ava),
+                new MealData("meal1", "descp1", R.drawable.ava),
+                new MealData("meal2", "descp2", R.drawable.ava),
+                new MealData("meal1", "descp1", R.drawable.ava),
                 new MealData("meal2", "descp2", R.drawable.ava)
         };
+
 
         MealAdapter myMovieAdapter = new MealAdapter(mealData);
         recyclerView.setAdapter(myMovieAdapter);
 
         return v;
+    }
+
+    OkHttpClient client = new OkHttpClient();
+    // Func: Get request to Spoonacular API
+    Call get(String url, String json, Callback callback) {
+        Request request = new Request.Builder()
+                .url(url)
+                .get()
+                .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+                .addHeader("x-rapidapi-key", "895ce719e4mshcb836fa18684a5ap1c69f2jsnf7e37492c80d")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(callback);
+        return call;
     }
 
 }

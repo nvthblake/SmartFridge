@@ -7,26 +7,26 @@
     <fragment
         android:id="@+id/ingredientFragment"
         android:name="com.example.smartfridge.IngredientFragment"
-        android:label="fragment_ingredient"
+        android:label="Ingredients"
         tools:layout="@layout/fragment_ingredient" />
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.smartfridge.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="Profile"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/scanFragment"
         android:name="com.example.smartfridge.ScanFragment"
-        android:label="fragment_scan"
+        android:label="Scan"
         tools:layout="@layout/fragment_scan" />
     <fragment
         android:id="@+id/shoppingFragment"
         android:name="com.example.smartfridge.ShoppingFragment"
-        android:label="fragment_shopping"
+        android:label="Shopping List"
         tools:layout="@layout/fragment_shopping" />
     <fragment
         android:id="@+id/recipeFragment"
         android:name="com.example.smartfridge.RecipeFragment"
-        android:label="fragment_recipe"
+        android:label="Recipe"
         tools:layout="@layout/fragment_recipe" />
 </navigation>
