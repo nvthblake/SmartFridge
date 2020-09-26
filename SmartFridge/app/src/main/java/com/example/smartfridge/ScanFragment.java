@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -93,7 +92,7 @@ public class ScanFragment extends Fragment {
         });
 
         // Drop-down category
-        staticSpinner = (Spinner) view.findViewById(R.id.static_spinner);
+        staticSpinner = (Spinner) view.findViewById(R.id.unit);
         ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter
                 .createFromResource(this.getContext(), R.array.unit_array, android.R.layout.simple_spinner_item);
         staticAdapter
@@ -101,7 +100,7 @@ public class ScanFragment extends Fragment {
         staticSpinner.setAdapter(staticAdapter);
 
         // Drop-down category
-        staticSpinner2 = (Spinner) view.findViewById(R.id.static_spinner2);
+        staticSpinner2 = (Spinner) view.findViewById(R.id.category);
         ArrayAdapter<CharSequence> staticAdapter2 = ArrayAdapter
                 .createFromResource(this.getContext(), R.array.category_array, android.R.layout.simple_spinner_item);
         staticAdapter2
@@ -109,7 +108,7 @@ public class ScanFragment extends Fragment {
         staticSpinner2.setAdapter(staticAdapter2);
 
         // EditText in date format
-        date = (EditText) view.findViewById(R.id.editDate);
+        date = (EditText) view.findViewById(R.id.expDate);
         date.addTextChangedListener(new TextWatcher() {
             private String current = "";
             private String ddmmyyyy = "DDMMYYYY";

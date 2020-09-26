@@ -39,12 +39,13 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 />
+
             <EditText
-                android:layout_height="wrap_content"
+                android:id="@+id/ingredientName"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:hint="Input Name"
-                />
+                android:hint="Input Name" />
 
         </LinearLayout>
 
@@ -66,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:hint="DD/MM/YYYY"
-                android:id="@+id/editDate"
+                android:id="@+id/expDate"
                 android:inputType="date" />
 
         </LinearLayout>
@@ -85,6 +86,7 @@
                 />
 
             <EditText
+                android:id="@+id/quantity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
@@ -109,7 +111,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="20dp"
-                android:id="@+id/static_spinner"
+                android:id="@+id/unit"
                 />
 
         </LinearLayout>
@@ -130,7 +132,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="20dp"
-                android:id="@+id/static_spinner2"
+                android:id="@+id/category"
                 />
 
         </LinearLayout>
