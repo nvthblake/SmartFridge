@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             SQLiteDatabase sqLiteDatabase = this.openOrCreateDatabase("smartfridge", MODE_PRIVATE, null);
 
             // Create schema for table that saves user's food inventory
-            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
+//            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
             {
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate VARCHAR, Category VARCHAR)");
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create view showing all items expiring within 3 days
-//            sqLiteDatabase.execSQL("DROP VIEW ItemsExpDays");
+            sqLiteDatabase.execSQL("DROP VIEW ItemsExpDays");
             sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, TimeDelta, ImageID, Amount, Category) AS SELECT IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageID, Amount, Category FROM FactFridge WHERE InFridge = 1;");
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExpDays", null);
