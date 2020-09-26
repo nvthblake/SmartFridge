@@ -4,22 +4,50 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShoppingFragment"
-    android:background="@color/colorBackground">
+    tools:context=".ShoppingFragment" >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:text="SHOPPING LIST"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        tools:ignore="MissingConstraints" />
+    <View
+        android:layout_width="160dp"
+        android:layout_height="2dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
+        android:background="@color/colorPrimary"/>
+
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="320dp"
+        android:layout_marginTop="630dp"
+        android:background="@drawable/roundedbutton"
+        android:text="Add Item"
+        android:textColor="#ffffff"
+        android:textSize="12dp" />
+
+    <EditText
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="630dp"
+        android:ems="30"
+        android:hint="Item to add"
+        android:inputType="textPersonName" />
+
+    <View
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_marginTop="620dp"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Shopping Page"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
