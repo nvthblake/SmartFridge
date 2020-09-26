@@ -89,22 +89,24 @@ public class ProfileFragment extends Fragment {
         // Access gallery
 
         TextView exp3DTextView = (TextView) view.findViewById(R.id.exp3DTextView);
-//        exp3DTextView.setText("3");
+        TextView exp10DTextView = (TextView) view.findViewById(R.id.exp10DTextView);
+        TextView expNegDTextView = (TextView) view.findViewById(R.id.expNegDTextView);
 
-        String sql = "SELECT * FROM FactFridge WHERE InFridge = 1";
-//        Cursor mCursor = sqLiteDatabase.rawQuery(sql, null);
-//        exp3DTextView.setText(Integer.toString(mCursor.getCount()));
-//        mCursor.close();
 
-        Cursor c = sqLiteDatabase.rawQuery(sql, null);
-        int expDatesIndex = c.getColumnIndex("ExpDates");
-        c.moveToFirst();
+        String sql3D = "SELECT TimeDelta FROM ItemsExpDays WHERE TimeDelta <= 4";
+        Cursor mCursor3d = sqLiteDatabase.rawQuery(sql3D, null);
+        exp3DTextView.setText(Integer.toString(mCursor3d.getCount()));
+        mCursor3d.close();
 
-//        while (c != null) {
-            exp3DTextView.setText(Integer.toString(expDatesIndex));
-//            c.moveToNext();
-//        }
-        c.close();
+        String sql10D = "SELECT TimeDelta FROM ItemsExpDays WHERE TimeDelta <= 11";
+        Cursor mCursor10d = sqLiteDatabase.rawQuery(sql10D, null);
+        exp10DTextView.setText(Integer.toString(mCursor10d.getCount()));
+        mCursor10d.close();
+
+        String sqlNegD = "SELECT TimeDelta FROM ItemsExpDays WHERE TimeDelta <= 1";
+        Cursor mCursorNegD = sqLiteDatabase.rawQuery(sqlNegD, null);
+        expNegDTextView.setText(Integer.toString(mCursorNegD.getCount()));
+        mCursorNegD.close();
 
 
         ProfileImage = (CircleImageView) view.findViewById(R.id.profile_image);
