@@ -27,41 +27,41 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/button5"
+                    android:id="@+id/btnAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="All" />
 
                 <Button
-                    android:id="@+id/button7"
+                    android:id="@+id/btnVegetables"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Vegetable" />
 
                 <Button
-                    android:id="@+id/button8"
+                    android:id="@+id/btnMeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Meat" />
 
                 <Button
-                    android:id="@+id/button9"
+                    android:id="@+id/btnFruit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Fruit" />
 
                 <Button
-                    android:id="@+id/button10"
+                    android:id="@+id/btnCondiment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Condiments" />
+                    android:text="Condiment" />
 
                 <Button
-                    android:id="@+id/button11"
+                    android:id="@+id/btnSnack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
