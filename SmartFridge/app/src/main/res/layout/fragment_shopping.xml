@@ -95,7 +95,7 @@
             <com.mancj.materialsearchbar.MaterialSearchBar
                 style="@style/MaterialSearchBarLight"
                 app:mt_speechMode="false"
-                app:mt_hint="Search a place"
+                app:mt_hint="Grocery near me"
                 app:mt_maxSuggestionsCount="10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,34 +1,27 @@
 package com.example.smartfridge;
 
-import androidx.annotation.Nullable;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.Manifest;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import com.example.smartfridge.TaskProvider;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+//    OkHttpClient client = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,14 +40,14 @@ public class MainActivity extends AppCompatActivity {
             SQLiteDatabase sqLiteDatabase = this.openOrCreateDatabase("smartfridge", MODE_PRIVATE, null);
 
             // Create schema for table that saves user's food inventory
-//            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
+            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
             {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate VARCHAR)");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('strawberry',3, 'box', 'strawberry.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('steak',2, 'lbs', 'steak.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('asparagus',1, 'bunch', 'asparagus.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('peach',1, 'fruit', 'peach.png', 1, '30/09/2020')");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate VARCHAR, Category VARCHAR)");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('strawberry',3, 'box', 'strawberry.png', 1, '30/09/2020', 'Fruit')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('steak',2, 'lbs', 'steak.png', 1, '30/09/2020', 'Meat')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('asparagus',1, 'bunch', 'asparagus.png', 1, '30/09/2020', 'Vegetable')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('peach',1, 'fruit', 'peach.png', 1, '30/09/2020', 'Fruit')");
             }
 
             // Create schema and data for table that saves ingredients within app's inventory
@@ -78,8 +71,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create view showing all items expiring within 3 days
-            sqLiteDatabase.execSQL("DROP VIEW IF EXISTS ItemsExpDays");
-            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, TimeDelta, ImageID, Amount) AS SELECT IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageID, Amount FROM FactFridge WHERE InFridge = 1;");
+//            sqLiteDatabase.execSQL("DROP VIEW ItemsExpDays");
+            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, TimeDelta, ImageID, Amount, Category) AS SELECT IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageID, Amount, Category FROM FactFridge WHERE InFridge = 1;");
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExpDays", null);
             int IngredientNameIndex = c.getColumnIndex("IngredientName");
@@ -96,5 +89,35 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // GET request to find recipes by ingredients
+//        get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number=5&ranking=1&ignorePantry=false&ingredients=apples%252Cflour%252Csugar", "", new Callback() {
+//            @Override
+//            public void onFailure(Request request, IOException e) {
+//                Log.d("----Rest Response Fail", e.toString());
+//            }
+//            @Override
+//            public void onResponse(Response response) throws IOException {
+//                if (response.isSuccessful()) {
+//                    String responseStr = response.body().string();
+//                    Log.d("----Rest Response", responseStr);
+//                } else {
+//                    Log.d("----Rest Response Fail", response.toString());
+//                }
+//            }
+//        });
     }
+
+    // Func: Get request to Spoonacular API
+//    Call get(String url, String json, Callback callback) {
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .get()
+//                .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+//                .addHeader("x-rapidapi-key", "895ce719e4mshcb836fa18684a5ap1c69f2jsnf7e37492c80d")
+//                .build();
+//        Call call = client.newCall(request);
+//        call.enqueue(callback);
+//        return call;
+//    }
 }

@@ -1,13 +1,17 @@
 package com.example.smartfridge;
 
+import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,6 +27,8 @@ import android.widget.Spinner;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 
 /**
@@ -197,6 +203,9 @@ public class ScanFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+        // Save button configuration
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
 
         btnSave = (Button) view.findViewById(R.id.btn_saveItem);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -217,6 +226,8 @@ public class ScanFragment extends Fragment {
                 ingredientName.getText().clear();
                 quantity.getText().clear();
                 date.getText().clear();
+
+                // Save to gallery
             }
         });
 
