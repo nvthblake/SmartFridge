@@ -1,12 +1,16 @@
 package com.example.smartfridge;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.smartfridge.Objects.MealAdapter;
+import com.example.smartfridge.Objects.MealData;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -53,12 +57,29 @@ public class RecipeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipe, container, false);
+        View v =  inflater.inflate(R.layout.fragment_recipe, container, false);
+
+        RecyclerView recyclerView = v.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        // Generate meal planner
+        MealData[] mealData = new MealData[]{
+                new MealData("meal1", "descp1", R.drawable.ava),
+                new MealData("meal2", "descp2", R.drawable.ava)
+        };
+
+        MealAdapter myMovieAdapter = new MealAdapter(mealData);
+        recyclerView.setAdapter(myMovieAdapter);
+
+        return v;
     }
+
 }
