@@ -1,34 +1,27 @@
 package com.example.smartfridge;
 
-import androidx.annotation.Nullable;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import android.Manifest;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.media.Image;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-
-import com.example.smartfridge.TaskProvider;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
+//    OkHttpClient client = new OkHttpClient();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,5 +89,35 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // GET request to find recipes by ingredients
+//        get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number=5&ranking=1&ignorePantry=false&ingredients=apples%252Cflour%252Csugar", "", new Callback() {
+//            @Override
+//            public void onFailure(Request request, IOException e) {
+//                Log.d("----Rest Response Fail", e.toString());
+//            }
+//            @Override
+//            public void onResponse(Response response) throws IOException {
+//                if (response.isSuccessful()) {
+//                    String responseStr = response.body().string();
+//                    Log.d("----Rest Response", responseStr);
+//                } else {
+//                    Log.d("----Rest Response Fail", response.toString());
+//                }
+//            }
+//        });
     }
+
+    // Func: Get request to Spoonacular API
+//    Call get(String url, String json, Callback callback) {
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .get()
+//                .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
+//                .addHeader("x-rapidapi-key", "895ce719e4mshcb836fa18684a5ap1c69f2jsnf7e37492c80d")
+//                .build();
+//        Call call = client.newCall(request);
+//        call.enqueue(callback);
+//        return call;
+//    }
 }

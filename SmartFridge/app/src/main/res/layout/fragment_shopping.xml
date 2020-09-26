@@ -82,12 +82,12 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/mapContainer"
             android:layout_width="0dp"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal"
             app:cardCornerRadius="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             app:layout_constraintBottom_toTopOf="@+id/ListView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -95,7 +95,7 @@
             <com.mancj.materialsearchbar.MaterialSearchBar
                 style="@style/MaterialSearchBarLight"
                 app:mt_speechMode="false"
-                app:mt_hint="Search a place"
+                app:mt_hint="Grocery near me"
                 app:mt_maxSuggestionsCount="10"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
             <com.google.android.gms.maps.MapView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="250dp"
                 android:id="@+id/user_list_map" />
 
         </androidx.cardview.widget.CardView>

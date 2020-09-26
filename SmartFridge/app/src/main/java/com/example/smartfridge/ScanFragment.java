@@ -1,13 +1,17 @@
 package com.example.smartfridge;
 
+import android.Manifest;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -18,11 +22,14 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 
 /**
@@ -32,8 +39,7 @@ import java.util.Calendar;
  */
 public class ScanFragment extends Fragment {
 
-    private Button btnCapture;
-    private ImageView imgCapture;
+    private ImageButton imgCapture;
     private Button btnSave;
     private static final int Image_Capture_Code = 1;
     Spinner staticSpinner;
@@ -102,9 +108,8 @@ public class ScanFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_scan, container, false);
 
         // Capture Image
-        btnCapture =(Button) view.findViewById(R.id.btn_captureImage);
-        imgCapture = (ImageView) view.findViewById(R.id.imageCapture);
-        btnCapture.setOnClickListener(new View.OnClickListener() {
+        imgCapture = (ImageButton) view.findViewById(R.id.imageCapture);
+        imgCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent cInt = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -194,6 +199,9 @@ public class ScanFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+        // Save button configuration
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
 
         btnSave = (Button) view.findViewById(R.id.btn_saveItem);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -215,6 +223,7 @@ public class ScanFragment extends Fragment {
                 ingredientName.getText().clear();
                 quantity.getText().clear();
                 date.getText().clear();
+
             }
         });
 
@@ -225,7 +234,7 @@ public class ScanFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Image_Capture_Code) {
             Bitmap bp = (Bitmap) data.getExtras().get("data");
-            imgCapture.setImageBitmap(bp);
+            imgCapture.setImageBitmap(Bitmap.createScaledBitmap(bp, 700, 900, false));
         }
     }
 }

@@ -12,11 +12,40 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/ingredient"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="20dp"
+            android:text="INGREDIENT"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.529" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="12dp"
+            android:background="#537aff"
+            app:layout_constraintBottom_toTopOf="@+id/horizontalScrollView"
+            app:layout_constraintEnd_toEndOf="@+id/ingredient"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
             android:layout_width="391dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="120dp"
             android:scrollbarSize="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -24,48 +53,71 @@
 
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="30dp">
 
                 <Button
                     android:id="@+id/btnAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="All" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="All"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnVegetable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:text="Vegetable" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Vegetable"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnMeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:text="Meat" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Meat"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnFruit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:text="Fruit" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Fruit"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnCondiment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:text="Condiment" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Condiment"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnSnack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:text="Snack" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Snack"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
             </LinearLayout>
         </HorizontalScrollView>
@@ -125,6 +177,7 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -156,6 +209,7 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -187,6 +241,7 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -218,6 +273,7 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -249,6 +305,7 @@
 
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

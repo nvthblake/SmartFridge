@@ -28,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Shit"
-            android:textSize="20sp"
+            android:autoSizeTextType="uniform"
             android:textStyle="bold">
 
         </TextView>
@@ -37,8 +37,8 @@
             android:id="@+id/ingre_exp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="QTY: 1"
-            android:textSize="15sp">
+            android:autoSizeTextType="uniform"
+            android:text="QTY: 1">
 
         </TextView>
 

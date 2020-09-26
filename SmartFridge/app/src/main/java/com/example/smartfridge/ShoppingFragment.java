@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.location.Location;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -69,7 +70,6 @@ import java.util.Set;
 public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
 
-
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -123,11 +123,11 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         updateLblEmptyVisibility(view);
 //        adapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_list_item_1, shoppingList);
         adapter = new MyListAdapter(view.getContext(), R.layout.list_item, shoppingList);
-        lv = (ListView)view.findViewById(R.id.ListView);
+        lv = (ListView) view.findViewById(R.id.ListView);
         lv.setAdapter(adapter);
 
         // Add Item
-        ImageButton btnAdd = (ImageButton)view.findViewById(R.id.btnAdd);
+        ImageButton btnAdd = (ImageButton) view.findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener((_view) -> {
 //            Snackbar.make(_view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
@@ -155,7 +155,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         });
 
         // Delete All
-        ImageButton btnDeleteAll = (ImageButton)view.findViewById(R.id.btnDeleteAll);
+        ImageButton btnDeleteAll = (ImageButton) view.findViewById(R.id.btnDeleteAll);
         btnDeleteAll.setOnClickListener((_view) -> {
 //            Snackbar.make(_view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
@@ -182,13 +182,10 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
             builder.show();
         });
         mMapView = view.findViewById(R.id.user_list_map);
-
         // Set up MapView
         initGoogleMap(savedInstanceState);
-
         return view;
     }
-
 
     public static ShoppingListItem preferredCase(ShoppingListItem original) {
         if (original.itemName.isEmpty()) {
@@ -202,13 +199,13 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         SharedPreferences WordSearchPutPrefs = context.getSharedPreferences("dbArrayValues", Activity.MODE_PRIVATE);
         String itemsJSONString = new Gson().toJson(inArrayList);
         SharedPreferences.Editor prefEditor = WordSearchPutPrefs.edit();
-        prefEditor.putString("myArray3", itemsJSONString);
+        prefEditor.putString("myArray4", itemsJSONString);
         prefEditor.commit();
     }
 
     public static ArrayList getArrayVal(Context dan) {
         SharedPreferences WordSearchGetPrefs = dan.getSharedPreferences("dbArrayValues", Activity.MODE_PRIVATE);
-        String itemsJSONString = WordSearchGetPrefs.getString("myArray3", null);
+        String itemsJSONString = WordSearchGetPrefs.getString("myArray4", null);
         Type type = new TypeToken<List<ShoppingListItem>>() {}.getType();
         List <ShoppingListItem> items = new Gson().fromJson(itemsJSONString, type);
         if (items == null) {
