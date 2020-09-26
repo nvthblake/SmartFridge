@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -31,6 +32,10 @@ public class ProfileFragment extends Fragment {
     private CircleImageView ProfileImage;
     private static final int PICK_IMAGE = 1;
     Uri imageUri;
+    private ProgressBar pgsBar;
+    private TextView txtView;
+    int status;
+    String text;
 
     SQLiteDatabase sqLiteDatabase;
 
@@ -81,6 +86,8 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
+        // Access gallery
+
         TextView exp3DTextView = (TextView) view.findViewById(R.id.exp3DTextView);
 //        exp3DTextView.setText("3");
 
@@ -112,6 +119,13 @@ public class ProfileFragment extends Fragment {
                 startActivityForResult(Intent.createChooser(gallery, "Selected Picture"), PICK_IMAGE);
             }
         });
+
+        // Update Fridge status
+        pgsBar = (ProgressBar) view.findViewById(R.id.pBar);
+        txtView = (TextView) view.findViewById(R.id.tView);
+        status = pgsBar.getProgress();
+        text = "Your fridge is " + Integer.toString(status) + "% full";
+        txtView.setText(text);
         return view;
     }
 

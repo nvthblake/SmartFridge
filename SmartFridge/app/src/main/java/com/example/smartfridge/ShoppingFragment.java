@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,10 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
@@ -30,17 +35,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.AutocompletePrediction;
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.FetchPlaceRequest;
+import com.google.android.libraries.places.api.net.FetchPlaceResponse;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.mancj.materialsearchbar.MaterialSearchBar;
+import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -57,6 +82,7 @@ import java.util.Set;
  */
 public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
     private MapView mMapView;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -113,19 +139,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         lv = (ListView)view.findViewById(R.id.ListView);
         lv.setAdapter(adapter);
 
-//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                String selectedItem = ((TextView)view).getText().toString();
-//                if (selectedItem.trim().equals(shoppingList.get(i).itemName.trim())) {
-//                    removeElement(selectedItem, i, view);
-//                }
-//                else {
-//                    Toast.makeText(view.getContext(), "Error Removing Element", Toast.LENGTH_LONG).show();
-//                }
-//            }
-//        });
-
+        // Add Item
         ImageButton btnAdd = (ImageButton)view.findViewById(R.id.btnAdd);
         btnAdd.setOnClickListener((_view) -> {
 //            Snackbar.make(_view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -152,6 +166,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
             builder.show();
         });
 
+        // Delete All
         ImageButton btnDeleteAll = (ImageButton)view.findViewById(R.id.btnDeleteAll);
         btnDeleteAll.setOnClickListener((_view) -> {
 //            Snackbar.make(_view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -179,10 +194,12 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         });
         mMapView = view.findViewById(R.id.user_list_map);
 
+        // Set up MapView
         initGoogleMap(savedInstanceState);
 
         return view;
     }
+
 
     public static ShoppingListItem preferredCase(ShoppingListItem original) {
         if (original.itemName.isEmpty()) {
