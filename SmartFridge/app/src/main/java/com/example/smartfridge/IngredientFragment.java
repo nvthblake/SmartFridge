@@ -1,17 +1,17 @@
 package com.example.smartfridge;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,6 +37,12 @@ public class IngredientFragment extends Fragment {
     int[] qty;
     String[] nameExp;
     int[] imageExp;
+    private Button btnAll;
+    private Button btnVegetable;
+    private Button btnMeat;
+    private Button btnFruit;
+    private Button btnCondiment;
+    private Button btnSnack;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -139,21 +145,74 @@ public class IngredientFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
-        filterIngredient("All", sqLiteDatabase);
-
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+        final View view = inflater.inflate(R.layout.fragment_ingredient, container, false);
 
-
-        View view = inflater.inflate(R.layout.fragment_ingredient, container, false);
+        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
+        filterIngredient("All", sqLiteDatabase);
 
         gridView = (GridView) view.findViewById(R.id.ingredientGrid);
         gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+
+        btnAll = (Button) view.findViewById(R.id.btnAll);
+        btnAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterIngredient("All", sqLiteDatabase);
+                gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+            }
+        });
+        btnVegetable = (Button) view.findViewById(R.id.btnVegetable);
+        btnVegetable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterIngredient(btnVegetable.getText().toString(), sqLiteDatabase);
+                gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+            }
+        });
+        btnMeat = (Button) view.findViewById(R.id.btnMeat);
+        btnMeat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterIngredient(btnMeat.getText().toString(), sqLiteDatabase);
+                gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+            }
+        });
+        btnCondiment = (Button) view.findViewById(R.id.btnCondiment);
+        btnCondiment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterIngredient(btnCondiment.getText().toString(), sqLiteDatabase);
+                gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+            }
+        });
+        btnSnack = (Button) view.findViewById(R.id.btnSnack);
+        btnSnack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterIngredient(btnSnack.getText().toString(), sqLiteDatabase);
+                gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+            }
+        });
+        btnFruit = (Button) view.findViewById(R.id.btnFruit);
+        btnFruit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterIngredient(btnFruit.getText().toString(), sqLiteDatabase);
+                gridView = (GridView) view.findViewById(R.id.ingredientGrid);
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+            }
+        });
+
 
         // Inflate the layout for this fragment
         return view;
