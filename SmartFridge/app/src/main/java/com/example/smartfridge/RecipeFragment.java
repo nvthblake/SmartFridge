@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartfridge.Objects.MealAdapter;
 import com.example.smartfridge.Objects.MealData;
-import c;
+import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -90,8 +90,7 @@ public class RecipeFragment extends Fragment {
             public void onResponse(Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String responseStr = response.body().string();
-                    JSONArray jsonArray = new JSONArray(response);
-
+//                    JSONArray jsonArray = new JSONArray(response);
                     Log.d("----Rest Response", responseStr);
                 } else {
                     Log.d("----Rest Response Fail", response.toString());
