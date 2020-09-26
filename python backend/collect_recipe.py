@@ -5,9 +5,9 @@ import json
 # Initialize variables
 headers = {
     'x-rapidapi-host': "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com",
-    'x-rapidapi-key': ""
+    'x-rapidapi-key': "895ce719e4mshcb836fa18684a5ap1c69f2jsnf7e37492c80d"
     }
-popularIngredients = ['rice', 'oatmeal', 'apple', 'chickpea', 'chicken', 'tomato', 'pasta', 'cauliflower']
+popularIngredients = ['rice', 'oatmeal', 'pasta', 'chicken']#, 'apple', 'chickpea', 'chicken', 'tomato', 'pasta', 'cauliflower']
 recipeIdArray = []
 recipeDf = pd.DataFrame(columns=['vegetarian', 'vegan', 'glutenFree', 'dairyFree', 'veryHealthy',
        'cheap', 'veryPopular', 'sustainable', 'weightWatcherSmartPoints',
@@ -29,9 +29,10 @@ dishTypeRecipeDf = pd.DataFrame(columns=['recipeId', 'dishType'])
 urlRecipeId = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients"
 
 for i in popularIngredients:
-    queryStringRecipeId = {"number":"30","ranking":"1","ignorePantry":"true","ingredients":i}
+    queryStringRecipeId = {"number":"20","ranking":"1","ignorePantry":"true","ingredients":i}
     responseRecipeId = requests.request("GET", urlRecipeId, headers=headers, params=queryStringRecipeId)
     jsonDataRecipeId = responseRecipeId.json()
+    recipeIdDf = pd.json_normalize(jsonDataRecipeId)
     recipeIdArray = recipeIdArray + [dic['id'] for dic in jsonDataRecipeId]
 
 recipeIdArray = list(dict.fromkeys(recipeIdArray))  # dedupe recipe IDs
@@ -47,9 +48,9 @@ for r in recipeIdArray:
 
 # Parse ingredients for each recipe
 for _, row in recipeDf.iterrows():
-    ingredientDict = row['extendedIngredients'][0]
-    ingredientDict['recipeId'] = row['id']
-    ingredientRecipeDf = ingredientRecipeDf.append(ingredientDict, ignore_index=True)
+    for ingredientDict in row['extendedIngredients']:
+        ingredientDict['recipeId'] = row['id']
+        ingredientRecipeDf = ingredientRecipeDf.append(ingredientDict, ignore_index=True)
 
 
 # Parse dish type for each recipe

@@ -10,10 +10,11 @@
     <!--  super light blue  -->
     <color name="colorThird">#eef3fb</color>
 
-    <!--  super light blue  -->
-
     <!--  light blue grey for background  -->
     <color name="colorBackground">#f4f6f9</color>
 
+    <color name="colorGrey">#575b63</color>
+    <color name="colorBlack">#292c3e</color>
     <color name="colorAccent">#EBF9F7</color>
+
 </resources>
