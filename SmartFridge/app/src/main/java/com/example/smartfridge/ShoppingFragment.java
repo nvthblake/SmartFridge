@@ -1,33 +1,53 @@
 package com.example.smartfridge;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Paint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -35,15 +55,17 @@ import java.util.Set;
  * Use the {@link ShoppingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ShoppingFragment extends Fragment {
+public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
+    private MapView mMapView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final String MAPVIEW_BUNDLE_KEY = "MapViewBundleKey";
 
-    ArrayList<String> shoppingList = null;
-    ArrayAdapter<String> adapter = null;
+    ArrayList<ShoppingListItem> shoppingList = null;
+    ArrayAdapter<ShoppingListItem> adapter = null;
     ListView lv = null;
 
     // TODO: Rename and change types of parameters
@@ -86,25 +108,26 @@ public class ShoppingFragment extends Fragment {
         shoppingList = getArrayVal(view.getContext());
 //        Collections.addAll Toothpaste");
         Collections.sort(shoppingList);
-        adapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_list_item_1, shoppingList);
+//        adapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_list_item_1, shoppingList);
+        adapter = new MyListAdapter(view.getContext(), R.layout.list_item, shoppingList);
         lv = (ListView)view.findViewById(R.id.ListView);
         lv.setAdapter(adapter);
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedItem = ((TextView)view).getText().toString();
-                if (selectedItem.trim().equals(shoppingList.get(i).trim())) {
-                    removeElement(selectedItem, i, view);
-                }
-                else {
-                    Toast.makeText(view.getContext(), "Error Removing Element", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
+//        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                String selectedItem = ((TextView)view).getText().toString();
+//                if (selectedItem.trim().equals(shoppingList.get(i).itemName.trim())) {
+//                    removeElement(selectedItem, i, view);
+//                }
+//                else {
+//                    Toast.makeText(view.getContext(), "Error Removing Element", Toast.LENGTH_LONG).show();
+//                }
+//            }
+//        });
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.setOnClickListener((_view) -> {
+        ImageButton btnAdd = (ImageButton)view.findViewById(R.id.btnAdd);
+        btnAdd.setOnClickListener((_view) -> {
 //            Snackbar.make(_view, "Replace with your own action", Snackbar.LENGTH_LONG)
 //                    .setAction("Action", null).show();
             AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
@@ -114,7 +137,7 @@ public class ShoppingFragment extends Fragment {
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    shoppingList.add(preferredCase(input.getText().toString()));
+                    shoppingList.add(preferredCase(new ShoppingListItem(input.getText().toString(), false)));
                     Collections.sort(shoppingList);
                     storeArrayVal(shoppingList, view.getContext());
                     lv.setAdapter(adapter);
@@ -129,34 +152,68 @@ public class ShoppingFragment extends Fragment {
             builder.show();
         });
 
+        ImageButton btnDeleteAll = (ImageButton)view.findViewById(R.id.btnDeleteAll);
+        btnDeleteAll.setOnClickListener((_view) -> {
+//            Snackbar.make(_view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+            builder.setTitle("Delete All?");
+            final EditText input = new EditText(view.getContext());
+            builder.setView(input);
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    shoppingList.clear();
+                    Collections.sort(shoppingList);
+                    storeArrayVal(shoppingList, view.getContext());
+                    lv.setAdapter(adapter);
+                }
+            });
+            builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogInterface.cancel();
+                }
+            });
+            builder.show();
+        });
+        mMapView = view.findViewById(R.id.user_list_map);
+
+        initGoogleMap(savedInstanceState);
+
         return view;
     }
 
-    public static String preferredCase(String original) {
-        if (original.isEmpty()) {
+    public static ShoppingListItem preferredCase(ShoppingListItem original) {
+        if (original.itemName.isEmpty()) {
             return original;
         }
-        return original.substring(0, 1).toUpperCase() + original.substring(1).toLowerCase();
+        original.itemName = original.itemName.substring(0, 1).toUpperCase() + original.itemName.substring(1).toLowerCase();
+        return original;
     }
 
     public static void storeArrayVal(ArrayList inArrayList, Context context) {
-        Set WhatToWrite = new HashSet(inArrayList);
         SharedPreferences WordSearchPutPrefs = context.getSharedPreferences("dbArrayValues", Activity.MODE_PRIVATE);
+        String itemsJSONString = new Gson().toJson(inArrayList);
         SharedPreferences.Editor prefEditor = WordSearchPutPrefs.edit();
-        prefEditor.putStringSet("myArray", WhatToWrite);
+        prefEditor.putString("myArray3", itemsJSONString);
         prefEditor.commit();
     }
 
     public static ArrayList getArrayVal(Context dan) {
         SharedPreferences WordSearchGetPrefs = dan.getSharedPreferences("dbArrayValues", Activity.MODE_PRIVATE);
-        Set tempSet = new HashSet();
-        tempSet = WordSearchGetPrefs.getStringSet("myArray", tempSet);
-        return new ArrayList<>(tempSet);
+        String itemsJSONString = WordSearchGetPrefs.getString("myArray3", null);
+        Type type = new TypeToken<List<ShoppingListItem>>() {}.getType();
+        List <ShoppingListItem> items = new Gson().fromJson(itemsJSONString, type);
+        if (items == null) {
+            return new ArrayList<ShoppingListItem>();
+        }
+        return new ArrayList<ShoppingListItem>(items);
     }
 
-    public void removeElement(String selectedItem, final int position, View view) {
+    public void removeElement(final int position, View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-        builder.setTitle("Remove " + selectedItem + "?");
+        builder.setTitle("Remove " + shoppingList.get(position).itemName + "?");
         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -173,5 +230,153 @@ public class ShoppingFragment extends Fragment {
             }
         });
         builder.show();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Bundle mapViewBundle = outState.getBundle(MAPVIEW_BUNDLE_KEY);
+        if (mapViewBundle == null) {
+            mapViewBundle = new Bundle();
+            outState.putBundle(MAPVIEW_BUNDLE_KEY, mapViewBundle);
+        }
+
+        mMapView.onSaveInstanceState(mapViewBundle);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mMapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mMapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mMapView.onStop();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        map.addMarker(new MarkerOptions().position(new LatLng(39.961474, -75.262882)).title("H Mart Upper Darby"));
+        map.addMarker(new MarkerOptions().position(new LatLng(39.936704, -75.162215)).title("Hung Vuong Supermarket"));
+        map.addMarker(new MarkerOptions().position(new LatLng(39.953248, -75.159444)).title("Reading Terminal Market #1"));
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        map.setMyLocationEnabled(true);
+        LatLngBounds australiaBounds = new LatLngBounds(
+                new LatLng(40.601414, -75.468371), // SW bounds
+                new LatLng(39.930067, -75.012003)  // NE bounds
+        );
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(australiaBounds.getCenter(), 10));
+    }
+
+    @Override
+    public void onPause() {
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mMapView.onLowMemory();
+    }
+
+    private class MyListAdapter extends ArrayAdapter<ShoppingListItem> {
+        ViewHolder mainViewHolder = null;
+        private int layout;
+        private MyListAdapter(Context context, int source, List<ShoppingListItem> objects) {
+            super(context, source, objects);
+            layout = source;
+        }
+
+        @NonNull
+        @Override
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View row = inflater.inflate(layout, parent, false);
+
+            CheckBox checkBox = row.findViewById(R.id.item_list_checkbox);
+
+            checkBox.setText(shoppingList.get(position).itemName);
+            checkBox.setChecked(shoppingList.get(position).isChecked);
+            if (checkBox.isChecked()) {
+                checkBox.setPaintFlags(checkBox.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+//                    Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+                    if (((CheckBox) view).isChecked()) {
+                        ShoppingListItem clone = shoppingList.get(position);
+                        clone.isChecked = true;
+                        shoppingList.set(position, clone);
+                        Collections.sort(shoppingList);
+                        storeArrayVal(shoppingList, view.getContext());
+                        lv.setAdapter(adapter);
+                    }
+                    else {
+                        Log.d("dfasdf", "unchecked");
+                        ShoppingListItem clone = shoppingList.get(position);
+                        clone.isChecked = false;
+                        shoppingList.set(position, clone);
+                        Collections.sort(shoppingList);
+                        storeArrayVal(shoppingList, view.getContext());
+                        lv.setAdapter(adapter);
+                    }
+                }
+            });
+            checkBox.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    removeElement(position, view);
+                    return true;
+                }
+            });
+            return row;
+        }
+    }
+
+    public class ViewHolder {
+        CheckBox checkBox;
+    }
+
+    private void initGoogleMap(Bundle savedInstanceState){
+        // *** IMPORTANT ***
+        // MapView requires that the Bundle you pass contain _ONLY_ MapView SDK
+        // objects or sub-Bundles.
+        Bundle mapViewBundle = null;
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAPVIEW_BUNDLE_KEY);
+        }
+
+        mMapView.onCreate(mapViewBundle);
+
+        mMapView.getMapAsync(this);
     }
 }
