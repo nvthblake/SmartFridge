@@ -37,8 +37,6 @@ import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -51,22 +49,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.AutocompletePrediction;
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.FetchPlaceRequest;
-import com.google.android.libraries.places.api.net.FetchPlaceResponse;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest;
-import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.mancj.materialsearchbar.MaterialSearchBar;
-import com.mancj.materialsearchbar.adapter.SuggestionsAdapter;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -282,25 +268,23 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         map.addMarker(new MarkerOptions().position(new LatLng(39.961474, -75.262882)).title("H Mart Upper Darby"));
         map.addMarker(new MarkerOptions().position(new LatLng(39.936704, -75.162215)).title("Hung Vuong Supermarket"));
         map.addMarker(new MarkerOptions().position(new LatLng(39.953248, -75.159444)).title("Reading Terminal Market #1"));
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        map.setMyLocationEnabled(true);
-        LatLngBounds australiaBounds = new LatLngBounds(
-                new LatLng(40.601414, -75.468371), // SW bounds
-                new LatLng(39.930067, -75.012003)  // NE bounds
-        );
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(australiaBounds.getCenter(), 10));
+//        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED
+//                && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        map.setMyLocationEnabled(true);
+        map.setMinZoomPreference(10.0f);
+        map.setMaxZoomPreference(14.0f);
+        map.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(39.961474, -75.262882)));
     }
 
     @Override
