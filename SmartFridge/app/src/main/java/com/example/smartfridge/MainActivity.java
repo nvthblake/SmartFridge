@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create view showing all items expiring within 3 days
-            sqLiteDatabase.execSQL("DROP VIEW ItemsExpDays");
+            sqLiteDatabase.execSQL("DROP VIEW IF EXISTS ItemsExpDays");
             sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, TimeDelta, ImageID, Amount) AS SELECT IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageID, Amount FROM FactFridge WHERE InFridge = 1;");
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExpDays", null);
