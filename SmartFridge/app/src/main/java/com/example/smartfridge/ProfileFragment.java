@@ -1,6 +1,8 @@
 package com.example.smartfridge;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,9 +10,11 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.io.IOException;
 
@@ -27,6 +31,8 @@ public class ProfileFragment extends Fragment {
     private CircleImageView ProfileImage;
     private static final int PICK_IMAGE = 1;
     Uri imageUri;
+
+    SQLiteDatabase sqLiteDatabase;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -71,7 +77,29 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
+
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        TextView exp3DTextView = (TextView) view.findViewById(R.id.exp3DTextView);
+//        exp3DTextView.setText("3");
+
+        String sql = "SELECT * FROM FactFridge WHERE InFridge = 1";
+//        Cursor mCursor = sqLiteDatabase.rawQuery(sql, null);
+//        exp3DTextView.setText(Integer.toString(mCursor.getCount()));
+//        mCursor.close();
+
+        Cursor c = sqLiteDatabase.rawQuery(sql, null);
+        int expDatesIndex = c.getColumnIndex("ExpDates");
+        c.moveToFirst();
+
+//        while (c != null) {
+            exp3DTextView.setText(Integer.toString(expDatesIndex));
+//            c.moveToNext();
+//        }
+        c.close();
+
+
         ProfileImage = (CircleImageView) view.findViewById(R.id.profile_image);
         ProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override

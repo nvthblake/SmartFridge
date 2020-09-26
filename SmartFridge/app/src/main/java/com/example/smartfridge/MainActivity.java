@@ -72,19 +72,28 @@ public class MainActivity extends AppCompatActivity {
                 sqLiteDatabase.execSQL("INSERT INTO DimRecipe (Title, SourceName, ReadyInMinute, Servings, SourceUrl) VALUES ('Sloppy Joe Casserole','Cravings of a Lunatic',30,6,'http://www.cravingsofalunatic.com/2013/10/sloppy-joe-casserole.html')");
             }
 
-            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM FactFridge", null);
+            // Create view showing all items expiring within 3 days
+            sqLiteDatabase.execSQL("DROP VIEW ItemsExp3Days");
+            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExp3Days (IngredientName, ExpirationDate, ExpMonth, TimeDelta) AS SELECT IngredientName, ExpirationDate, strftime('%m', ExpirationDate), JulianDay(ExpirationDate) - JulianDay('now') FROM FactFridge WHERE InFridge = 1;");
+
+            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExp3Days", null);
             int IngredientNameIndex = c.getColumnIndex("IngredientName");
-            int ImageIndex = c.getColumnIndex("ImageID");
-            int IDIndex = c.getColumnIndex("ID");
+            int TimeDeltaIndex = c.getColumnIndex("TimeDelta");
+            int ExpDateIndex = c.getColumnIndex("ExpirationDate");
+//            int ExpMonthIndex = c.getColumnIndex("ExpirationMonth");
+//            int IDIndex = c.getColumnIndex("ID");
             c.moveToFirst();
 
             while (c != null) {
                 Log.i("IngredientName ", c.getString(IngredientNameIndex));
-                Log.i("Image ", c.getString(ImageIndex));
-                Log.i("ID ", Integer.toString(c.getInt(IDIndex)));
+                Log.i("TimeDelta ", Integer.toString(c.getInt(TimeDeltaIndex)));
+                Log.i("ExpirationDate ", c.getString(ExpDateIndex));
+//                Log.i("ExpirationMonth ", Integer.toString(c.getInt(ExpMonthIndex)));
+//                Log.i("ID ", Integer.toString(c.getInt(IDIndex)));
 
                 c.moveToNext();
             }
+            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

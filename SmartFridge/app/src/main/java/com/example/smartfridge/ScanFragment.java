@@ -47,9 +47,7 @@ public class ScanFragment extends Fragment {
     String ingredientNameStr;
     EditText quantity;
     String quantityStr;
-    EditText unit;
     String unitStr;
-    EditText category;
     String categoryStr;
     SQLiteDatabase sqLiteDatabase;
 
