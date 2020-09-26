@@ -32,7 +32,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="40dp"
-            android:background="#45454D"
+            android:background="#537aff"
             app:layout_constraintBottom_toTopOf="@+id/mapContainer"
             app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintStart_toStartOf="parent" />
@@ -79,15 +79,32 @@
 
         </ListView>
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:id="@+id/mapContainer"
             android:layout_width="0dp"
             android:layout_height="300dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal"
+            app:cardCornerRadius="20dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
             app:layout_constraintBottom_toTopOf="@+id/ListView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
+
+            <com.mancj.materialsearchbar.MaterialSearchBar
+                style="@style/MaterialSearchBarLight"
+                app:mt_speechMode="false"
+                app:mt_hint="Search a place"
+                app:mt_maxSuggestionsCount="10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/searchBar"
+                android:layout_margin="16dp"
+                app:mt_navIconEnabled="true"
+                android:elevation="5dp"
+                android:outlineProvider="paddedBounds"
+                app:mt_placeholder="Search a place"/>
 
             <com.google.android.gms.maps.MapView
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -95,7 +112,7 @@
                 android:layout_height="match_parent"
                 android:id="@+id/user_list_map" />
 
-        </LinearLayout>
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

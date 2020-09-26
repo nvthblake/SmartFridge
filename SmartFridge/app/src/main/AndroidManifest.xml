@@ -3,6 +3,8 @@
     package="com.example.smartfridge">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyA6qjEENt0cnYOLPlqrSIdY0n8_7jRlHqE" />
+            android:value="@string/google_maps_api" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,5 +22,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>
