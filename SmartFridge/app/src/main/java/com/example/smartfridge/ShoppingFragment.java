@@ -120,6 +120,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         shoppingList = getArrayVal(view.getContext());
 //        Collections.addAll Toothpaste");
         Collections.sort(shoppingList);
+        updateLblEmptyVisibility(view);
 //        adapter = new ArrayAdapter(view.getContext(), android.R.layout.simple_list_item_1, shoppingList);
         adapter = new MyListAdapter(view.getContext(), R.layout.list_item, shoppingList);
         lv = (ListView)view.findViewById(R.id.ListView);
@@ -141,6 +142,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
                     Collections.sort(shoppingList);
                     storeArrayVal(shoppingList, view.getContext());
                     lv.setAdapter(adapter);
+                    updateLblEmptyVisibility(view);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -168,6 +170,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
                     Collections.sort(shoppingList);
                     storeArrayVal(shoppingList, view.getContext());
                     lv.setAdapter(adapter);
+                    updateLblEmptyVisibility(view);
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -224,6 +227,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
                 Collections.sort(shoppingList);
                 storeArrayVal(shoppingList, view.getContext());
                 lv.setAdapter(adapter);
+                updateLblEmptyVisibility(view);
             }
         });
         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -379,5 +383,20 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         mMapView.onCreate(mapViewBundle);
 
         mMapView.getMapAsync(this);
+    }
+
+    private void updateLblEmptyVisibility(View view) {
+        if (shoppingList.size() == 0) {
+            ListView itemsList = (ListView)view.findViewById(R.id.ListView);
+            itemsList.setVisibility(View.INVISIBLE);
+            TextView lblEmpty = (TextView)view.findViewById(R.id.lblEmpty);
+            lblEmpty.setVisibility(View.VISIBLE);
+        }
+        else {
+            ListView itemsList = (ListView)view.findViewById(R.id.ListView);
+            itemsList.setVisibility(View.VISIBLE);
+            TextView lblEmpty = (TextView)view.findViewById(R.id.lblEmpty);
+            lblEmpty.setVisibility(View.INVISIBLE);
+        }
     }
 }
