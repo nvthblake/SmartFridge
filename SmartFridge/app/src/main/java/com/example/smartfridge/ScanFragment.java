@@ -219,10 +219,11 @@ public class ScanFragment extends Fragment {
                 categoryStr = staticSpinner2.getSelectedItem().toString();
 
                 // Insert input to database
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('" + ingredientNameStr + "'," + quantityStr + ", '" + unitStr + "', '" + ingredientNameStr + "', 1, '" + expStr + "')");
+                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('" + ingredientNameStr + "'," + quantityStr + ", '" + unitStr + "', '" + ingredientNameStr + "', 1, '" + expStr + "', '" + categoryStr + "' )");
 
                 // Show message and reset input
                 Toast.makeText(getActivity(),"Item saved to inventory",Toast.LENGTH_SHORT).show();
+//                Log.i("Category ", categoryStr);
                 ingredientName.getText().clear();
                 quantity.getText().clear();
                 date.getText().clear();

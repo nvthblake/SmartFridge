@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,10 +82,10 @@ public class IngredientFragment extends Fragment {
 
         if (ingreCategory == "All") {
             sql = "SELECT * FROM ItemsExpDays";
-            sqlExpSoon = "SELECT * FROM ItemsExpDays WHERE TimeDelta <= 7";
+            sqlExpSoon = "SELECT * FROM ItemsExpDays WHERE TimeDelta <= 7 ORDER BY TimeDelta";
         } else {
             sql = "SELECT * FROM ItemsExpDays WHERE Category = '" + ingreCategory + "'";
-            sqlExpSoon = "SELECT * FROM ItemsExpDays WHERE TimeDelta <= 7 AND Category = '" + ingreCategory + "'";
+            sqlExpSoon = "SELECT * FROM ItemsExpDays WHERE TimeDelta <= 7 AND Category = '" + ingreCategory + "' ORDER BY TimeDelta";
         }
 
         // Update items regardless of expiration date
@@ -93,6 +94,7 @@ public class IngredientFragment extends Fragment {
         int TimeDeltaIndex = c.getColumnIndex("TimeDelta");
         int ImageIndex = c.getColumnIndex("ImageID");
         int QuantityIndex = c.getColumnIndex("Amount");
+        int CategoryIndex = c.getColumnIndex("Category");
 
         fridgeCap = c.getCount();
 
@@ -105,6 +107,8 @@ public class IngredientFragment extends Fragment {
         c.moveToFirst();
 
         while (!c.isAfterLast()) {
+            Log.i("Food ", c.getString(IngredientNameIndex));
+//            Log.i("Category ", c.getString(CategoryIndex));
             name[i] = c.getString(IngredientNameIndex);
             image[i] = R.drawable.ic_baseline_fastfood_50;
             expDate[i] = c.getInt(TimeDeltaIndex);
