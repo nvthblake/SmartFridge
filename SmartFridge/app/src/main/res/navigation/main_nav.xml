@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_nav"
-    app:startDestination="@id/ingredientFragment">
+    app:startDestination="@id/profileFragment">
     <fragment
         android:id="@+id/ingredientFragment"
         android:name="com.example.smartfridge.IngredientFragment"
