@@ -125,7 +125,11 @@ public class ProfileFragment extends Fragment {
         // Update Fridge status
         pgsBar = (ProgressBar) view.findViewById(R.id.pBar);
         txtView = (TextView) view.findViewById(R.id.tView);
-        status = pgsBar.getProgress();
+        String sqlItems = "SELECT * FROM ItemsExpDays";
+        Cursor cItems = sqLiteDatabase.rawQuery(sqlItems, null);
+        status = cItems.getCount();
+        cItems.close();
+        pgsBar.setProgress(status);
         text = "Your fridge is " + Integer.toString(status) + "% full";
         txtView.setText(text);
         return view;

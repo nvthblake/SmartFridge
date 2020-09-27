@@ -1,10 +1,15 @@
 package com.example.smartfridge;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -17,16 +22,26 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 //    OkHttpClient client = new OkHttpClient();
 
+//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TaskProvider taskProvider = new TaskProvider();
+        DbBitmapUtility byteFromDrawableConverter = new DbBitmapUtility();
+        String[] ingredientNameStr = new String[]{"strawberry","steak", "asparagus", "peach"};
+        int[] quantityStr = new int[]{1,2,1,4};
+        String[] unitStr = new String[]{"Boxes", "Pounds", "Null", "Null"};
+        byte[] imageBPArr;
+        String[] expStr = new String[]{"30/09/2020","30/09/2020","30/09/2020","30/09/2020"};
+        String[] categoryStr = new String[]{"Fruit", "Meat", "Vegetable", "Fruit"};
+
 
         // Navigation bar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -41,13 +56,31 @@ public class MainActivity extends AppCompatActivity {
 
             // Create schema for table that saves user's food inventory
 //            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
+//            sqLiteDatabase.execSQL("DELETE FROM FactFridge WHERE ID >= 3");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
             {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageID VARCHAR, InFridge INT(1), ExpirationDate VARCHAR)");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('strawberry',3, 'box', 'strawberry.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('steak',2, 'lbs', 'steak.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('asparagus',1, 'bunch', 'asparagus.png', 1, '30/09/2020')");
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('peach',1, 'fruit', 'peach.png', 1, '30/09/2020')");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageBP BLOB, InFridge INT(1), ExpirationDate VARCHAR, Category VARCHAR)");
+                ContentValues cv = new ContentValues();
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_baseline_fastfood_50);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                byte[] img = bos.toByteArray();
+
+                for (int i = 0; i<5; i++) {
+                    cv.put("IngredientName", ingredientNameStr[i]);
+                    cv.put("Amount", quantityStr[i]);
+                    cv.put("Unit", unitStr[i]);
+                    cv.put("InFridge", 1);
+                    cv.put("ExpirationDate", expStr[i]);
+                    cv.put("Category", categoryStr[i]);
+//                    cv.put("ImageBP", img);
+                    sqLiteDatabase.insert("FactFridge", null, cv);
+                }
+
+//                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('strawberry',3, 'box', NULL, 1, '30/09/2020', 'Fruit')");
+//                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('steak',2, 'lbs', NULL, 1, '30/09/2020', 'Meat')");
+//                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('asparagus',1, 'bunch', NULL, 1, '30/09/2020', 'Vegetable')");
+//                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('peach',1, 'fruit', NULL, 1, '30/09/2020', 'Fruit')");
             }
 
             // Create schema and data for table that saves ingredients within app's inventory
@@ -71,8 +104,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create view showing all items expiring within 3 days
-//            sqLiteDatabase.execSQL("DROP VIEW ItemsExp3Days");
-            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (IngredientName, ExpMonth, TimeDelta) AS SELECT IngredientName, strftime('%m', ExpirationDate), JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now') FROM FactFridge WHERE InFridge = 1;");
+            sqLiteDatabase.execSQL("DROP VIEW IF EXISTS ItemsExpDays");
+            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (ID, IngredientName, TimeDelta, ImageBP, Amount, Category) AS SELECT ID, IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageBP, Amount, Category FROM FactFridge WHERE InFridge = 1;");
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExpDays", null);
             int IngredientNameIndex = c.getColumnIndex("IngredientName");
