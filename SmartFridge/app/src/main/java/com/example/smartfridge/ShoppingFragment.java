@@ -6,13 +6,17 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Paint;
 import android.location.Location;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -61,6 +65,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,6 +84,7 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
     ArrayList<ShoppingListItem> shoppingList = null;
     ArrayAdapter<ShoppingListItem> adapter = null;
     ListView lv = null;
+    SQLiteDatabase sqLiteDatabase;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -118,6 +124,27 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
         View view = inflater.inflate(R.layout.fragment_shopping, container, false);
 
         shoppingList = getArrayVal(view.getContext());
+        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
+
+        // Gather list of missing ingredients based on database
+        Cursor c = sqLiteDatabase.rawQuery("SELECT DISTINCT name, id FROM FactRecipeIngredients WHERE available = 0 AND onShopList = 0", null);
+        int fridgeCap = c.getCount();
+        int i = 0;
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            shoppingList.add(new ShoppingListItem(c.getString(0), false));
+            sqLiteDatabase.execSQL("UPDATE FactRecipeIngredients SET onShopList = 1 WHERE id = " + Integer.toString(c.getInt(1)));
+//            ingredientToShop[i] = c.getString(0);
+            i++;
+            c.moveToNext();
+        }
+        c.close();
+
+//        for (int row = 0; i < fridgeCap; i++) {
+//            Collections.add()
+//        }
+
 //        Collections.addAll Toothpaste");
         Collections.sort(shoppingList);
         updateLblEmptyVisibility(view);
@@ -164,13 +191,24 @@ public class ShoppingFragment extends Fragment implements OnMapReadyCallback {
             final EditText input = new EditText(view.getContext());
             builder.setView(input);
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.N)
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     shoppingList.clear();
+                    String itemStr = "";
+                    for (int o = 0; o < shoppingList.size(); o++) {
+                        itemStr += "'";
+                        itemStr += shoppingList.get(o).itemName;
+                        itemStr += "'";
+                        if (o != shoppingList.size() - 1) {
+                            itemStr += ",";
+                        }
+                    }
                     Collections.sort(shoppingList);
                     storeArrayVal(shoppingList, view.getContext());
                     lv.setAdapter(adapter);
                     updateLblEmptyVisibility(view);
+                    sqLiteDatabase.execSQL("UPDATE FactRecipeIngredients SET onShopList = 0, available = 1 WHERE name IN (" + itemStr + ")");
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
