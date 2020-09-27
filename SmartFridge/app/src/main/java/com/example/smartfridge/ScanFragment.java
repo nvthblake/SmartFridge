@@ -1,21 +1,18 @@
 package com.example.smartfridge;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +20,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.Calendar;
 
 /**
@@ -66,6 +60,9 @@ public class ScanFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    Bitmap bp;
+    byte[] ba;
+
     public ScanFragment() {
         // Required empty public constructor
     }
@@ -97,6 +94,16 @@ public class ScanFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        DbBitmapUtility byteArrayConverter = new DbBitmapUtility();
+        if (requestCode == Image_Capture_Code) {
+            bp = (Bitmap) data.getExtras().get("data");
+            imgCapture.setImageBitmap(Bitmap.createScaledBitmap(bp, 700, 400, false));
+            ba = byteArrayConverter.getBytes(bp);
+        }
     }
 
     @Nullable
@@ -188,9 +195,6 @@ public class ScanFragment extends Fragment {
                     date.setText(current);
                     date.setSelection(sel < current.length() ? sel : current.length());
                     expStr = date.getText().toString();
-//                    expDate = expStr.substring(0, 2);
-//                    expMonth = expStr.substring(3, 2);
-//                    expYear = expStr.substring(6, 4);
 
                 }
             }
@@ -218,7 +222,17 @@ public class ScanFragment extends Fragment {
                 categoryStr = staticSpinner2.getSelectedItem().toString();
 
                 // Insert input to database
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('" + ingredientNameStr + "'," + quantityStr + ", '" + unitStr + "', '" + ingredientNameStr + "', 1, '" + expStr + "', '" + categoryStr + "' )");
+//                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('" + ingredientNameStr + "'," + quantityStr + ", '" + unitStr + "', '" + ingredientNameStr + "', 1, '" + expStr + "', '" + categoryStr + "' )");
+
+                ContentValues cv = new ContentValues();
+                cv.put("IngredientName", ingredientNameStr);
+                cv.put("Amount", quantityStr);
+                cv.put("Unit", unitStr);
+                cv.put("InFridge", 1);
+                cv.put("ExpirationDate", expStr);
+                cv.put("Category", categoryStr);
+                cv.put("ImageBP", ba);
+                sqLiteDatabase.insert("FactFridge", null, cv);
 
                 // Show message and reset input
                 Toast.makeText(getActivity(),"Item saved to inventory",Toast.LENGTH_SHORT).show();
@@ -231,13 +245,5 @@ public class ScanFragment extends Fragment {
         });
 
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Image_Capture_Code) {
-            Bitmap bp = (Bitmap) data.getExtras().get("data");
-            imgCapture.setImageBitmap(Bitmap.createScaledBitmap(bp, 700, 900, false));
-        }
     }
 }

@@ -16,10 +16,11 @@
 
         <ImageView
             android:id="@+id/empty_ingre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:padding="2dp"
-            app:srcCompat="@drawable/ic_baseline_fastfood_50">
+            app:srcCompat="@drawable/ic_baseline_fastfood_50"
+            android:scaleType="centerCrop">
 
         </ImageView>
 
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Shit"
-            android:autoSizeTextType="uniform"
+            android:textSize="20sp"
             android:textStyle="bold">
 
         </TextView>
@@ -37,8 +38,8 @@
             android:id="@+id/ingre_exp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:autoSizeTextType="uniform"
-            android:text="QTY: 1">
+            android:text="QTY: 1"
+            android:textSize="15sp">
 
         </TextView>
 
