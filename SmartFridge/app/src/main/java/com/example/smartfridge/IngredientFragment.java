@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -228,6 +229,8 @@ public class IngredientFragment extends Fragment {
                             public void onClick(DialogInterface dialog, int which) {
                                 ingredientDeleteID = ingredientID[position];
                                 sqLiteDatabase.execSQL("UPDATE FactFridge SET InFridge = 0 WHERE ID = " + Integer.toString(ingredientDeleteID));
+                                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                                ft.detach(IngredientFragment.this).attach(IngredientFragment.this).commit();
 //                                adapter.notifyDataSetChanged();
 ////                                gridAdapter.notifyDataSetChanged();
                             }
@@ -249,6 +252,13 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
                 recyclerView.setAdapter(adapter);
+                // Change focus
+                btnVegetable.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnAll.setBackground(getResources().getDrawable(R.drawable.roundedselect));
+                btnCondiment.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnFruit.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnMeat.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnSnack.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
             }
         });
         btnVegetable = (Button) view.findViewById(R.id.btnVegetable);
@@ -260,6 +270,13 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
                 recyclerView.setAdapter(adapter);
+                // Change focus
+                btnVegetable.setBackground(getResources().getDrawable(R.drawable.roundedselect));
+                btnAll.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnCondiment.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnFruit.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnMeat.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnSnack.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
             }
         });
         btnMeat = (Button) view.findViewById(R.id.btnMeat);
@@ -271,6 +288,13 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
                 recyclerView.setAdapter(adapter);
+                // Change focus
+                btnVegetable.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnAll.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnCondiment.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnFruit.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnMeat.setBackground(getResources().getDrawable(R.drawable.roundedselect));
+                btnSnack.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
             }
         });
         btnCondiment = (Button) view.findViewById(R.id.btnCondiment);
@@ -282,6 +306,13 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
                 recyclerView.setAdapter(adapter);
+                // Change focus
+                btnVegetable.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnAll.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnCondiment.setBackground(getResources().getDrawable(R.drawable.roundedselect));
+                btnFruit.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnMeat.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnSnack.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
             }
         });
         btnSnack = (Button) view.findViewById(R.id.btnSnack);
@@ -293,6 +324,13 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
                 recyclerView.setAdapter(adapter);
+                // Change focus
+                btnVegetable.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnAll.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnCondiment.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnFruit.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnMeat.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnSnack.setBackground(getResources().getDrawable(R.drawable.roundedselect));
             }
         });
         btnFruit = (Button) view.findViewById(R.id.btnFruit);
@@ -304,6 +342,13 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
                 RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
                 recyclerView.setAdapter(adapter);
+                // Change focus
+                btnVegetable.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnAll.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnCondiment.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnFruit.setBackground(getResources().getDrawable(R.drawable.roundedselect));
+                btnMeat.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+                btnSnack.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
             }
         });
 

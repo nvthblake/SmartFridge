@@ -242,7 +242,7 @@ public class ScanFragment extends Fragment {
                 date.getText().clear();
                 imgCapture.setImageBitmap(null);
                 imgCapture.setImageResource(R.drawable.addimage);
-                bp.recycle();
+                if (bp != null) {bp.recycle();}
                 ba = new byte[0];
 
             }

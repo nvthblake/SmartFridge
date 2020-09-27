@@ -3,6 +3,7 @@ package com.example.smartfridge;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,7 @@ import com.example.smartfridge.Objects.MealAdapter;
 import com.example.smartfridge.Objects.MealData;
 import com.example.smartfridge.Objects.RateList;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -30,7 +32,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -111,19 +116,29 @@ public class RecipeFragment extends Fragment {
         String finalIngredientStr = ingredientStr;
         Map<String, String> params = new HashMap<String, String>() {{
             put("ingredients", finalIngredientStr);
-            put("number", "1");
+            put("number", "4");
             put("ranking", "1");
         }};
         findRecipesByIngredients(params);
 
-        // Generate meal planner on UI
-        MealData[] mealData = new MealData[]{
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-        };
+        // Generate meal plan based on DimRecipe
+        String sqlRecipe = "SELECT DISTINCT title, imageType, image FROM DimRecipe";
+        Cursor c2 = sqLiteDatabase.rawQuery(sqlRecipe, null);
+        int titleIndex = c2.getColumnIndex("title");
+        int imageTypeIndex = c2.getColumnIndex("imageType");
+        int imageIndex = c2.getColumnIndex("image");
+
+        int mealLength = c2.getCount();
+        MealData[] mealData = new MealData[mealLength];
+        int m = 0;
+        c2.moveToFirst();
+
+        while (!c2.isAfterLast()) {
+            mealData[m] = new MealData(c2.getString(titleIndex), c2.getString(imageTypeIndex), c2.getString(imageIndex));
+            m++;
+            c2.moveToNext();
+        }
+        c2.close();
         MealAdapter myMovieAdapter = new MealAdapter(mealData);
         recyclerView.setAdapter(myMovieAdapter);
 
@@ -150,14 +165,12 @@ public class RecipeFragment extends Fragment {
                     Log.d("----Rest Response", responseStr);
                     try {
                         JSONArray jsonArray = new JSONArray(responseStr);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
-                            RateList[] itemList;
-                            itemList = new Gson().fromJson(jsonArray.toString(), RateList[].class);
-                            insertData(itemList);
-
-                            Log.d("----Json", jsonObject.toString());
-                        }
+//                        RateList[] itemList;
+                        Type type = new TypeToken<List<RateList>>() {}.getType();
+                        List<RateList> itemList = new Gson().fromJson(jsonArray.toString(), type);
+                        ArrayList<RateList> result = new ArrayList<RateList>(itemList);
+//                        insertData((RateList[]) itemList.toArray());
+                        insertData(result);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -167,18 +180,39 @@ public class RecipeFragment extends Fragment {
                 }
             }
 
-            private void insertData(RateList[] itemList) {
+            private void insertData(ArrayList<RateList> itemList) {
                 ContentValues contentValues = new ContentValues();
+                ContentValues cvIngredient = new ContentValues();
 
-                for (int i = 0; i < itemList.length; i++) {
-                    contentValues.put("id", ""+itemList[i].id);
-                    contentValues.put("title", itemList[i].title);
-                    contentValues.put("image", itemList[i].image);
-                    contentValues.put("imageType", itemList[i].imageType);
-                    contentValues.put("usedIngredientCount", itemList[i].usedIngredientCount);
-                    contentValues.put("missedIngredientCount", itemList[i].missedIngredientCount);
-                    contentValues.put("likes", itemList[i].likes);
+                for (int i = 0; i < itemList.size(); i++) {
+                    contentValues.put("id", ""+itemList.get(i).id);
+                    contentValues.put("title", itemList.get(i).title);
+                    contentValues.put("image", itemList.get(i).image);
+                    contentValues.put("imageType", itemList.get(i).imageType);
+                    contentValues.put("usedIngredientCount", itemList.get(i).usedIngredientCount);
+                    contentValues.put("missedIngredientCount", itemList.get(i).missedIngredientCount);
+                    contentValues.put("likes", itemList.get(i).likes);
                     sqLiteDatabase.insert("DimRecipe", null, contentValues);
+                    for (int p = 0; p <itemList.get(i).missedIngredients.size(); p++) {
+                        cvIngredient.put("id", ""+itemList.get(i).missedIngredients.get(p).id);
+                        cvIngredient.put("amount", ""+itemList.get(i).missedIngredients.get(p).amount);
+                        cvIngredient.put("unit", ""+itemList.get(i).missedIngredients.get(p).unit);
+                        cvIngredient.put("name", ""+itemList.get(i).missedIngredients.get(p).name);
+                        cvIngredient.put("recipeId", ""+itemList.get(i).id);
+                        cvIngredient.put("available", 0);
+                        cvIngredient.put("onShopList", 0);
+                        sqLiteDatabase.insert("FactRecipeIngredients", null, cvIngredient);
+                    }
+                    for (int q = 0; q <itemList.get(i).usedIngredients.size(); q++) {
+                        cvIngredient.put("id", ""+itemList.get(i).usedIngredients.get(q).id);
+                        cvIngredient.put("amount", ""+itemList.get(i).usedIngredients.get(q).amount);
+                        cvIngredient.put("unit", ""+itemList.get(i).usedIngredients.get(q).unit);
+                        cvIngredient.put("name", ""+itemList.get(i).usedIngredients.get(q).name);
+                        cvIngredient.put("recipeId", ""+itemList.get(i).id);
+                        cvIngredient.put("available", 1);
+                        cvIngredient.put("onShopList", 0);
+                        sqLiteDatabase.insert("FactRecipeIngredients", null, cvIngredient);
+                    }
                 }
             }
         });
