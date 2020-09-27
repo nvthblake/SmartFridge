@@ -34,17 +34,15 @@
             android:text="@string/meal_planning"
             android:textSize="20sp"
             android:textStyle="bold"
-            tools:ignore="MissingConstraints"
-            android:fontFamily="@font/futura"
-            android:textColor="@color/colorBlack"/>
+            tools:ignore="MissingConstraints" />
 
         <!--   Line     -->
         <View
-            android:layout_width="50dp"
+            android:layout_width="160dp"
             android:layout_height="3dp"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="60dp"
-            android:background="@color/colorGrey"
+            android:layout_marginTop="50dp"
+            android:background="@color/colorPrimary"
             android:layout_marginStart="20dp" />
 
 
