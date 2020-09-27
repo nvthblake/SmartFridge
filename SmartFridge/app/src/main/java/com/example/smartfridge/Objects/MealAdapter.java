@@ -23,7 +23,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.meal_list, parent, false);
+        View view = layoutInflater.inflate(R.layout.recipe_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }

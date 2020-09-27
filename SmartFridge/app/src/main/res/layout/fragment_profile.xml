@@ -19,18 +19,20 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
             android:src="@drawable/ava"
-            app:civ_border_width="0dp" />
+            app:civ_border_width="0dp"
+            android:scaleType="centerCrop"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="50dp"
-            android:text="Welcome to SmartFridge"
+            android:text="Good Morning"
             android:textAlignment="center"
-            android:textStyle="bold"
-            android:textSize="30dp"
-            android:gravity="center_horizontal" />
+            android:textSize="25dp"
+            android:gravity="center_horizontal"
+            android:fontFamily="@font/lucida_grande"
+            android:textColor="@color/colorBlack"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/memberCardView1"
@@ -38,7 +40,9 @@
             android:layout_height="300dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="260dp"
-            app:cardCornerRadius="20dp" >
+            app:cardCornerRadius="20dp"
+            android:elevation="20dp"
+            android:outlineSpotShadowColor="@color/colorPrimary">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -65,10 +69,11 @@
                 <ProgressBar
                     android:id="@+id/pBar"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="250dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="10dp"
+                    android:progressBackgroundTint="@color/colorThird"
+                    android:layout_width="260dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_weight="1"
                     android:indeterminate="false"
                     android:max="100"
@@ -128,7 +133,7 @@
                 <TextView
                     android:id="@+id/exp10DTextView"
                     android:layout_width="70dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="70dp"
                     android:background="@drawable/rounded_textview"
                     android:layout_marginLeft="50dp"
                     android:gravity="center"
@@ -190,6 +195,22 @@
             android:text="Suggested Recipe"
             android:textColor="#000000"
             android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/suggestMeal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/suggestRecycler"
+                android:layout_margin="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
 
     </RelativeLayout>
 </FrameLayout>
