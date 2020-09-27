@@ -18,7 +18,7 @@
             android:layout_height="150dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
-            android:src="@drawable/addimage"
+            android:src="@drawable/ava"
             app:civ_border_width="0dp" />
 
         <TextView
