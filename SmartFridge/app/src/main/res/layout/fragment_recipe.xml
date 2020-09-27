@@ -31,16 +31,16 @@
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="20dp"
-            android:text="@string/meal_planning"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:text="Meal Planning"
             tools:ignore="MissingConstraints"
-            android:fontFamily="@font/futura"
-            android:textColor="@color/colorBlack"/>
+            android:fontFamily="@font/lucida_grande"
+            android:textColor="@color/colorGrey"
+            android:textSize="25sp"
+            />
 
         <!--   Line     -->
         <View
-            android:layout_width="50dp"
+            android:layout_width="30dp"
             android:layout_height="3dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="60dp"
