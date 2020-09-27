@@ -33,13 +33,6 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
         holder.textMealName.setText(mealDataList.getMealName());
         holder.textMealDescp.setText(mealDataList.getMealDescription());
         holder.mealImage.setImageResource(mealDataList.getMealImage());
-
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(context, mealDataList.getMealName(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
     }
 
     @Override
