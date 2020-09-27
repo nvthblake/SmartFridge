@@ -8,10 +8,10 @@
     <color name="colorSecondary">#7a9aff</color>
 
     <!--  super light blue  -->
-    <color name="colorThird">#eef3fb</color>
+    <color name="colorThird">#7CFC00</color>
 
     <!--  light blue grey for background  -->
-    <color name="colorBackground">#f4f6f9</color>
+    <color name="colorBackground">#eef3fb</color>
 
     <color name="colorGrey">#575b63</color>
     <color name="colorBlack">#292c3e</color>

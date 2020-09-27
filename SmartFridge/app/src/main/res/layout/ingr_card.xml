@@ -2,25 +2,26 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/ingre_card"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    app:cardBackgroundColor="#F1E9A5"
-    app:cardCornerRadius="8dp">
+    android:layout_width="130dp"
+    android:layout_height="130dp"
+    android:layout_margin="4dp"
+    app:cardCornerRadius="20dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="116dp"
+        android:layout_height="116dp"
         android:layout_gravity="center_vertical|center_horizontal"
         android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/empty_ingre"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="107dp"
+            android:layout_height="71dp"
             android:padding="2dp"
-            app:srcCompat="@drawable/ic_baseline_fastfood_50"
-            android:scaleType="centerCrop">
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/ava"
+            >
 
         </ImageView>
 
@@ -28,18 +29,20 @@
             android:id="@+id/ingre_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:autoSizeTextType="uniform"
             android:text="Shit"
-            android:textSize="20sp"
-            android:textStyle="bold">
-
+            android:textStyle="bold"
+            android:textColor="@color/colorBlack"
+            android:textSize="15dp">
         </TextView>
 
         <TextView
             android:id="@+id/ingre_exp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="QTY: 1"
-            android:textSize="15sp">
+            android:text=""
+            android:textSize="10sp"
+            android:textColor="@color/colorGrey">
 
         </TextView>
 

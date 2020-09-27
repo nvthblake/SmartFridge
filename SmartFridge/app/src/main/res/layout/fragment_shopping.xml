@@ -17,24 +17,25 @@
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="30dp"
-            android:text="@string/title_shopping_list"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:text="Shopping List"
+            android:textSize="25sp"
             app:layout_constraintBottom_toTopOf="@+id/divider"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="MissingConstraints" />
+            tools:ignore="MissingConstraints"
+            android:fontFamily="@font/lucida_grande"
+            android:textColor="@color/colorGrey"/>
 
         <View
             android:id="@+id/divider"
-            android:layout_width="0dp"
+            android:layout_width="30dp"
             android:layout_height="3dp"
+            android:layout_marginTop="30dp"
             android:layout_marginStart="20dp"
             android:layout_marginLeft="20dp"
             android:layout_marginBottom="40dp"
-            android:background="#537aff"
+            android:background="@color/colorGrey"
             app:layout_constraintBottom_toTopOf="@+id/mapContainer"
-            app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageButton
@@ -67,7 +68,7 @@
         <ListView
             android:id="@+id/ListView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:layout_marginStart="18dp"
             android:layout_marginLeft="18dp"
             android:layout_marginTop="30dp"
@@ -85,32 +86,40 @@
             android:layout_height="250dp"
             android:layout_marginBottom="10dp"
             android:orientation="horizontal"
-            app:cardCornerRadius="20dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            app:cardCornerRadius="30dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            app:cardElevation="20dp"
+            android:outlineSpotShadowColor="@color/colorPrimary"
             app:layout_constraintBottom_toTopOf="@+id/ListView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.mancj.materialsearchbar.MaterialSearchBar
-                style="@style/MaterialSearchBarLight"
-                app:mt_speechMode="false"
-                app:mt_hint="Grocery near me"
-                app:mt_maxSuggestionsCount="10"
-                android:layout_width="match_parent"
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/searchBar"
-                android:layout_margin="16dp"
-                app:mt_navIconEnabled="true"
                 android:elevation="5dp"
-                android:outlineProvider="paddedBounds"
-                app:mt_placeholder="Search a place" />
+                android:layout_margin="16dp"
+                app:cardCornerRadius="30dp">
+
+                <com.mancj.materialsearchbar.MaterialSearchBar
+                    style="@style/MaterialSearchBarLight"
+                    app:mt_speechMode="false"
+                    app:mt_hint="Grocery near me"
+                    app:mt_maxSuggestionsCount="10"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/searchBar"
+                    app:mt_navIconEnabled="true"
+                    app:mt_placeholder="Search a place"
+                    app:mt_textColor="@color/colorGrey"/>
+            </androidx.cardview.widget.CardView>
+
 
             <com.google.android.gms.maps.MapView
-                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/user_list_map"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:id="@+id/user_list_map" />
+                android:layout_height="250dp" />
 
         </androidx.cardview.widget.CardView>
 

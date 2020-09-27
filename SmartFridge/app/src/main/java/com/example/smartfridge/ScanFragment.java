@@ -101,7 +101,7 @@ public class ScanFragment extends Fragment {
         DbBitmapUtility byteArrayConverter = new DbBitmapUtility();
         if (requestCode == Image_Capture_Code) {
             bp = (Bitmap) data.getExtras().get("data");
-            imgCapture.setImageBitmap(Bitmap.createScaledBitmap(bp, 700, 400, false));
+            imgCapture.setImageBitmap(Bitmap.createScaledBitmap(bp, 700, 900, false));
             ba = byteArrayConverter.getBytes(bp);
         }
     }
@@ -240,6 +240,10 @@ public class ScanFragment extends Fragment {
                 ingredientName.getText().clear();
                 quantity.getText().clear();
                 date.getText().clear();
+                imgCapture.setImageBitmap(null);
+                imgCapture.setImageResource(R.drawable.addimage);
+                if (bp != null) {bp.recycle();}
+                ba = new byte[0];
 
             }
         });

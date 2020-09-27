@@ -1,26 +1,42 @@
 package com.example.smartfridge;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.smartfridge.Objects.ApiCaller;
 import com.example.smartfridge.Objects.MealAdapter;
 import com.example.smartfridge.Objects.MealData;
+import com.example.smartfridge.Objects.RateList;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +45,7 @@ import java.io.IOException;
  */
 public class RecipeFragment extends Fragment {
 
+    SQLiteDatabase sqLiteDatabase;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -70,9 +87,11 @@ public class RecipeFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_recipe, container, false);
 
@@ -80,8 +99,61 @@ public class RecipeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        // GET request to find recipes by ingredients
-        get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number=5&ranking=1&ignorePantry=false&ingredients=apples%252Cflour%252Csugar", "", new Callback() {
+        // Prepare list of available ingredients
+        Cursor c = sqLiteDatabase.rawQuery("SELECT IngredientName FROM ItemsExpDays ORDER BY TimeDelta", null);
+        String ingredientStr = "";
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            ingredientStr = ingredientStr + c.getString(0) + ", ";
+            c.moveToNext();
+        }
+        c.close();
+        Log.i("---Ingre ", ingredientStr);
+
+
+        // Request api get
+        String finalIngredientStr = ingredientStr;
+        Map<String, String> params = new HashMap<String, String>() {{
+            put("ingredients", finalIngredientStr);
+            put("number", "4");
+            put("ranking", "1");
+        }};
+        findRecipesByIngredients(params);
+
+        // Generate meal plan based on DimRecipe
+        String sqlRecipe = "SELECT DISTINCT title, imageType, image FROM DimRecipe";
+        Cursor c2 = sqLiteDatabase.rawQuery(sqlRecipe, null);
+        int titleIndex = c2.getColumnIndex("title");
+        int imageTypeIndex = c2.getColumnIndex("imageType");
+        int imageIndex = c2.getColumnIndex("image");
+
+        int mealLength = c2.getCount();
+        MealData[] mealData = new MealData[mealLength];
+        int m = 0;
+        c2.moveToFirst();
+
+        while (!c2.isAfterLast()) {
+            mealData[m] = new MealData(c2.getString(titleIndex), c2.getString(imageTypeIndex), c2.getString(imageIndex));
+            m++;
+            c2.moveToNext();
+        }
+        c2.close();
+        MealAdapter myMovieAdapter = new MealAdapter(mealData);
+        recyclerView.setAdapter(myMovieAdapter);
+
+        return v;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void findRecipesByIngredients(Map<String, String> params) {
+        String url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients";
+
+        ApiCaller apiCaller = new ApiCaller(url, params);
+        Call caller = apiCaller.getRequest();
+        caller.enqueue(new Callback() {
+            String responseStr;
+
             @Override
             public void onFailure(Request request, IOException e) {
                 Log.d("----Rest Response Fail", e.toString());
@@ -89,46 +161,68 @@ public class RecipeFragment extends Fragment {
             @Override
             public void onResponse(Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String responseStr = response.body().string();
-//                    JSONArray jsonArray = new JSONArray(response);
+                    responseStr = response.body().string();
                     Log.d("----Rest Response", responseStr);
+                    try {
+                        JSONArray jsonArray = new JSONArray(responseStr);
+//                        RateList[] itemList;
+                        Type type = new TypeToken<List<RateList>>() {}.getType();
+                        List<RateList> itemList = new Gson().fromJson(jsonArray.toString(), type);
+                        ArrayList<RateList> result = new ArrayList<RateList>(itemList);
+//                        insertData((RateList[]) itemList.toArray());
+                        insertData(result);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 } else {
                     Log.d("----Rest Response Fail", response.toString());
                 }
             }
+
+            private void insertData(ArrayList<RateList> itemList) {
+                ContentValues contentValues = new ContentValues();
+                ContentValues cvIngredient = new ContentValues();
+
+                for (int i = 0; i < itemList.size(); i++) {
+                    contentValues.put("id", ""+itemList.get(i).id);
+                    contentValues.put("title", itemList.get(i).title);
+                    contentValues.put("image", itemList.get(i).image);
+                    contentValues.put("imageType", itemList.get(i).imageType);
+                    contentValues.put("usedIngredientCount", itemList.get(i).usedIngredientCount);
+                    contentValues.put("missedIngredientCount", itemList.get(i).missedIngredientCount);
+                    contentValues.put("likes", itemList.get(i).likes);
+                    sqLiteDatabase.insert("DimRecipe", null, contentValues);
+                    for (int p = 0; p <itemList.get(i).missedIngredients.size(); p++) {
+                        cvIngredient.put("id", ""+itemList.get(i).missedIngredients.get(p).id);
+                        cvIngredient.put("amount", ""+itemList.get(i).missedIngredients.get(p).amount);
+                        cvIngredient.put("unit", ""+itemList.get(i).missedIngredients.get(p).unit);
+                        cvIngredient.put("name", ""+itemList.get(i).missedIngredients.get(p).name);
+                        cvIngredient.put("recipeId", ""+itemList.get(i).id);
+                        cvIngredient.put("available", 0);
+                        cvIngredient.put("onShopList", 0);
+                        sqLiteDatabase.insert("FactRecipeIngredients", null, cvIngredient);
+                    }
+                    for (int q = 0; q <itemList.get(i).usedIngredients.size(); q++) {
+                        cvIngredient.put("id", ""+itemList.get(i).usedIngredients.get(q).id);
+                        cvIngredient.put("amount", ""+itemList.get(i).usedIngredients.get(q).amount);
+                        cvIngredient.put("unit", ""+itemList.get(i).usedIngredients.get(q).unit);
+                        cvIngredient.put("name", ""+itemList.get(i).usedIngredients.get(q).name);
+                        cvIngredient.put("recipeId", ""+itemList.get(i).id);
+                        cvIngredient.put("available", 1);
+                        cvIngredient.put("onShopList", 0);
+                        sqLiteDatabase.insert("FactRecipeIngredients", null, cvIngredient);
+                    }
+                }
+            }
         });
-
-        // Generate meal planner
-        MealData[] mealData = new MealData[]{
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava),
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava),
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava),
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava)
-        };
-
-
-        MealAdapter myMovieAdapter = new MealAdapter(mealData);
-        recyclerView.setAdapter(myMovieAdapter);
-
-        return v;
     }
 
-    OkHttpClient client = new OkHttpClient();
-    // Func: Get request to Spoonacular API
-    Call get(String url, String json, Callback callback) {
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "895ce719e4mshcb836fa18684a5ap1c69f2jsnf7e37492c80d")
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(callback);
-        return call;
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void generateMealPlan(Map<String, String> params) {
+        String url = "https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/mealplanner/generate";
+        ApiCaller apiCaller = new ApiCaller(url, params);
+//        apiCaller.getRequest();
     }
-
 }
+

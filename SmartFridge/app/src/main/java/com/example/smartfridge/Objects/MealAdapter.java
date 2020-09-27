@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartfridge.R;
+import com.squareup.picasso.Picasso;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
     MealData[] mealData;
@@ -22,7 +23,7 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
-        View view = layoutInflater.inflate(R.layout.meal_list, parent, false);
+        View view = layoutInflater.inflate(R.layout.recipe_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -32,14 +33,10 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
         final MealData mealDataList = mealData[position];
         holder.textMealName.setText(mealDataList.getMealName());
         holder.textMealDescp.setText(mealDataList.getMealDescription());
-        holder.mealImage.setImageResource(mealDataList.getMealImage());
-
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Toast.makeText(context, mealDataList.getMealName(), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+//        holder.mealImage.setImageBitmap(mealDataList.getMealImage());
+        Picasso.with(holder.mealImage.getContext())
+                .load(mealDataList.getMealImage())
+                .into(holder.mealImage);
     }
 
     @Override
