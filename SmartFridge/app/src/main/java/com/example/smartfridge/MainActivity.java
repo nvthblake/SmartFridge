@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 //            }
 
             // Create schema and data for table that saves recipes within app's inventory
-            sqLiteDatabase.execSQL("DROP TABLE DimRecipe");
+//            sqLiteDatabase.execSQL("DROP TABLE DimRecipe");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimRecipe")) {
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INTEGER, inPlan INTEGER)");
                 ContentValues contentValues = new ContentValues();
@@ -104,9 +104,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create schema and dummy data for table that saves recipes and corresponding ingredients within app's inventory
-//            sqLiteDatabase.execSQL("DROP TABLE FactRecipeIngredient");
-            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactRecipeIngredient")) {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactRecipeIngredients (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, amount INTEGER, unit VARCHAR, name VARCHAR, recipeId INTEGER, available INTEGER)");
+            sqLiteDatabase.execSQL("DROP TABLE FactRecipeIngredients");
+            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactRecipeIngredients")) {
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactRecipeIngredients (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, amount DECIMAL(10,5), unit VARCHAR, name VARCHAR, recipeId INTEGER, available INTEGER, onShopList INTEGER)");
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("id", 9003);
                 contentValues.put("amount", 6.0);
@@ -114,7 +114,8 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put("name", "apples");
                 contentValues.put("recipeId", 47950);
                 contentValues.put("available", 0);
-                sqLiteDatabase.insert("FactIngredientRecipe", null, contentValues);
+                contentValues.put("onShopList", 0);
+                sqLiteDatabase.insert("FactRecipeIngredients", null, contentValues);
             }
 
             // Create view showing all items with time till expiration
