@@ -112,13 +112,6 @@ public class MainActivity extends AppCompatActivity {
             int TimeDeltaIndex = c.getColumnIndex("TimeDelta");
             c.moveToFirst();
 
-            while (c != null) {
-                Log.i("IngredientName ", c.getString(IngredientNameIndex));
-                Log.i("TimeDelta ", Integer.toString(c.getInt(TimeDeltaIndex)));
-
-                c.moveToNext();
-            }
-            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
