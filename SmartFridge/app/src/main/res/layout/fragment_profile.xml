@@ -18,7 +18,7 @@
             android:layout_height="150dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="100dp"
-            android:src="@drawable/addimage"
+            android:src="@drawable/ava"
             app:civ_border_width="0dp" />
 
         <TextView
@@ -64,17 +64,15 @@
 
                 <ProgressBar
                     android:id="@+id/pBar"
-                    android:layout_height="wrap_content"
-                    android:layout_width="250dp"
                     style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_marginTop="10dp"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
-                    android:max="100"
-                    android:indeterminate="false"
-                    android:progress="50"
+                    android:layout_marginTop="10dp"
                     android:layout_weight="1"
-                    android:progressDrawable="@drawable/rounded_corners_progress_bar"
-                    />
+                    android:indeterminate="false"
+                    android:max="100"
+                    android:progressDrawable="@drawable/rounded_corners_progress_bar" />
 
             </LinearLayout>
             <TextView

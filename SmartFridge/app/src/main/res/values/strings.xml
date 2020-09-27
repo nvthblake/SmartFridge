@@ -24,10 +24,10 @@
         <item>Null</item>
     </string-array>
     <string-array name="category_array">
-        <item>Vegetables</item>
+        <item>Vegetable</item>
         <item>Fruit</item>
         <item>Snack</item>
-        <item>Condiments</item>
+        <item>Condiment</item>
         <item>Meat</item>
         <item>Other</item>
     </string-array>

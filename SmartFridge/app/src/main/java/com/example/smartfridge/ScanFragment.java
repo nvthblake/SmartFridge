@@ -1,24 +1,25 @@
 package com.example.smartfridge;
 
+import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
@@ -32,8 +33,7 @@ import java.util.Calendar;
  */
 public class ScanFragment extends Fragment {
 
-    private Button btnCapture;
-    private ImageView imgCapture;
+    private ImageButton imgCapture;
     private Button btnSave;
     private static final int Image_Capture_Code = 1;
     Spinner staticSpinner;
@@ -59,6 +59,9 @@ public class ScanFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    Bitmap bp;
+    byte[] ba;
 
     public ScanFragment() {
         // Required empty public constructor
@@ -93,6 +96,16 @@ public class ScanFragment extends Fragment {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        DbBitmapUtility byteArrayConverter = new DbBitmapUtility();
+        if (requestCode == Image_Capture_Code) {
+            bp = (Bitmap) data.getExtras().get("data");
+            imgCapture.setImageBitmap(Bitmap.createScaledBitmap(bp, 700, 400, false));
+            ba = byteArrayConverter.getBytes(bp);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,9 +115,8 @@ public class ScanFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_scan, container, false);
 
         // Capture Image
-        btnCapture =(Button) view.findViewById(R.id.btn_captureImage);
-        imgCapture = (ImageView) view.findViewById(R.id.imageCapture);
-        btnCapture.setOnClickListener(new View.OnClickListener() {
+        imgCapture = (ImageButton) view.findViewById(R.id.imageCapture);
+        imgCapture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent cInt = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -183,9 +195,6 @@ public class ScanFragment extends Fragment {
                     date.setText(current);
                     date.setSelection(sel < current.length() ? sel : current.length());
                     expStr = date.getText().toString();
-//                    expDate = expStr.substring(0, 2);
-//                    expMonth = expStr.substring(3, 2);
-//                    expYear = expStr.substring(6, 4);
 
                 }
             }
@@ -197,6 +206,9 @@ public class ScanFragment extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+        // Save button configuration
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+        ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},1);
 
         btnSave = (Button) view.findViewById(R.id.btn_saveItem);
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -210,24 +222,28 @@ public class ScanFragment extends Fragment {
                 categoryStr = staticSpinner2.getSelectedItem().toString();
 
                 // Insert input to database
-                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate) VALUES ('" + ingredientNameStr + "'," + quantityStr + ", '" + unitStr + "', '" + ingredientNameStr + "', 1, '" + expStr + "')");
+//                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageID, InFridge, ExpirationDate, Category) VALUES ('" + ingredientNameStr + "'," + quantityStr + ", '" + unitStr + "', '" + ingredientNameStr + "', 1, '" + expStr + "', '" + categoryStr + "' )");
+
+                ContentValues cv = new ContentValues();
+                cv.put("IngredientName", ingredientNameStr);
+                cv.put("Amount", quantityStr);
+                cv.put("Unit", unitStr);
+                cv.put("InFridge", 1);
+                cv.put("ExpirationDate", expStr);
+                cv.put("Category", categoryStr);
+                cv.put("ImageBP", ba);
+                sqLiteDatabase.insert("FactFridge", null, cv);
 
                 // Show message and reset input
                 Toast.makeText(getActivity(),"Item saved to inventory",Toast.LENGTH_SHORT).show();
+//                Log.i("Category ", categoryStr);
                 ingredientName.getText().clear();
                 quantity.getText().clear();
                 date.getText().clear();
+
             }
         });
 
         return view;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Image_Capture_Code) {
-            Bitmap bp = (Bitmap) data.getExtras().get("data");
-            imgCapture.setImageBitmap(bp);
-        }
     }
 }
