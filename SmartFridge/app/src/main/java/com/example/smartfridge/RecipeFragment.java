@@ -1,5 +1,8 @@
 package com.example.smartfridge;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.smartfridge.Objects.ApiCaller;
 import com.example.smartfridge.Objects.MealAdapter;
 import com.example.smartfridge.Objects.MealData;
+import com.example.smartfridge.Objects.RateList;
+import com.google.gson.Gson;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -35,6 +40,7 @@ import java.util.Map;
  */
 public class RecipeFragment extends Fragment {
 
+    SQLiteDatabase sqLiteDatabase;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -79,6 +85,7 @@ public class RecipeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        sqLiteDatabase = sqLiteDatabase.openDatabase("/data/data/com.example.smartfridge/databases/smartfridge", null, 0);
         // Inflate the layout for this fragment
         View v =  inflater.inflate(R.layout.fragment_recipe, container, false);
 
@@ -86,9 +93,23 @@ public class RecipeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        // Prepare list of available ingredients
+        Cursor c = sqLiteDatabase.rawQuery("SELECT IngredientName FROM ItemsExpDays ORDER BY TimeDelta", null);
+        String ingredientStr = "";
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            ingredientStr = ingredientStr + c.getString(0) + ", ";
+            c.moveToNext();
+        }
+        c.close();
+        Log.i("---Ingre ", ingredientStr);
+
+
         // Request api get
+        String finalIngredientStr = ingredientStr.substring(0, ingredientStr.length() - 2);
         Map<String, String> params = new HashMap<String, String>() {{
-            put("ingredients", "apples, flour, sugar");
+            put("ingredients", finalIngredientStr);
             put("number", "1");
             put("ranking", "1");
         }};
@@ -133,6 +154,10 @@ public class RecipeFragment extends Fragment {
                         JSONArray jsonArray = new JSONArray(responseStr);
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+                            RateList[] itemList;
+                            itemList = new Gson().fromJson(jsonObject.toString(), RateList[].class);
+                            insertData(itemList);
+
                             Log.d("----Json", jsonObject.toString());
                         }
                     } catch (JSONException e) {
@@ -141,6 +166,21 @@ public class RecipeFragment extends Fragment {
 
                 } else {
                     Log.d("----Rest Response Fail", response.toString());
+                }
+            }
+
+            private void insertData(RateList[] itemList) {
+                ContentValues contentValues = new ContentValues();
+
+                for (int i = 0; i < itemList.length; i++) {
+                    contentValues.put("id", ""+itemList[i].id);
+                    contentValues.put("title", itemList[i].title);
+                    contentValues.put("image", itemList[i].image);
+                    contentValues.put("imageType", itemList[i].imageType);
+                    contentValues.put("usedIngredientCount", itemList[i].usedIngredientCount);
+                    contentValues.put("missedIngredientCount", itemList[i].missedIngredientCount);
+                    contentValues.put("likes", itemList[i].likes);
+                    sqLiteDatabase.insert("DimRecipe", null, contentValues);
                 }
             }
         });
