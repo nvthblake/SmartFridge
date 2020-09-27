@@ -198,7 +198,7 @@ public class IngredientFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity());
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
         recyclerView.setAdapter(adapter);
 
         btnAll = (Button) view.findViewById(R.id.btnAll);
@@ -208,6 +208,8 @@ public class IngredientFragment extends Fragment {
                 filterIngredient("All", sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
+                recyclerView.setAdapter(adapter);
             }
         });
         btnVegetable = (Button) view.findViewById(R.id.btnVegetable);
@@ -217,6 +219,8 @@ public class IngredientFragment extends Fragment {
                 filterIngredient(btnVegetable.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
+                recyclerView.setAdapter(adapter);
             }
         });
         btnMeat = (Button) view.findViewById(R.id.btnMeat);
@@ -226,6 +230,8 @@ public class IngredientFragment extends Fragment {
                 filterIngredient(btnMeat.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
+                recyclerView.setAdapter(adapter);
             }
         });
         btnCondiment = (Button) view.findViewById(R.id.btnCondiment);
@@ -235,6 +241,8 @@ public class IngredientFragment extends Fragment {
                 filterIngredient(btnCondiment.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
+                recyclerView.setAdapter(adapter);
             }
         });
         btnSnack = (Button) view.findViewById(R.id.btnSnack);
@@ -244,6 +252,8 @@ public class IngredientFragment extends Fragment {
                 filterIngredient(btnSnack.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
+                recyclerView.setAdapter(adapter);
             }
         });
         btnFruit = (Button) view.findViewById(R.id.btnFruit);
@@ -253,6 +263,8 @@ public class IngredientFragment extends Fragment {
                 filterIngredient(btnFruit.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
+                RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity(), imageBP, imageNull);
+                recyclerView.setAdapter(adapter);
             }
         });
 
