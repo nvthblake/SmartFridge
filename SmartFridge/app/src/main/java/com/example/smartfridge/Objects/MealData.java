@@ -1,14 +1,16 @@
 package com.example.smartfridge.Objects;
+import android.graphics.Bitmap;
+import com.example.smartfridge.DbBitmapUtility;
 
 public class MealData {
     private String mealName;
     private String mealDescription;
-    private int mealImage;
+    private String mealImage;
 
-    public MealData(String mealName, String mealDescription, int mealImage) {
-        this.mealName = mealName;
-        this.mealDescription = mealDescription;
-        this.mealImage = mealImage;
+    public MealData(String mealName, String mealDescription, String mealImage) {
+        setMealName(mealName);
+        setMealDescription(mealDescription);
+        setMealImage(mealImage);
     }
 
     // Getter Methods
@@ -20,7 +22,7 @@ public class MealData {
         return this.mealDescription;
     }
 
-    public int getMealImage() {
+    public String getMealImage() {
         return this.mealImage;
     }
 
@@ -33,7 +35,7 @@ public class MealData {
         this.mealDescription = mealDescription;
     }
 
-    public void setMealImage(int mealImage) {
+    public void setMealImage(String mealImage) {
         this.mealImage = mealImage;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.smartfridge;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,11 +20,15 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     private String[] nameEXP;
     private int[] imageEXP;
     private Context context;
+    private Bitmap[] imageBP;
+    private int[] imageNull;
 
-    public RecyclerViewAdapter(String[] nameEXP, int[] imageEXP, Context context) {
+    public RecyclerViewAdapter(String[] nameEXP, int[] imageEXP, Context context, Bitmap[] imageBP, int[] imageNull) {
         this.nameEXP = nameEXP;
         this.imageEXP = imageEXP;
         this.context = context;
+        this.imageBP = imageBP;
+        this.imageNull = imageNull;
     }
     @NonNull
     @Override
@@ -37,7 +42,12 @@ public class RecyclerViewAdapter extends  RecyclerView.Adapter<RecyclerViewAdapt
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.imageExp.setImageResource(imageEXP[position]);
+//        holder.imageExp.setImageResource(imageEXP[position]);
+        if (imageNull[position] == 0) {
+            holder.imageExp.setImageBitmap(imageBP[position]);
+        } else {
+            holder.imageExp.setImageResource(imageEXP[position]);
+        }
         holder.nameExp.setText(nameEXP[position]);
         holder.qtyText.setVisibility(View.GONE);
 
