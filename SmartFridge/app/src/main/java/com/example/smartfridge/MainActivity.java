@@ -74,22 +74,22 @@ public class MainActivity extends AppCompatActivity {
 //                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('peach',1, 'fruit', NULL, 1, '30/09/2020', 'Fruit')");
             }
 
-            // Create schema and data for table that saves ingredients within app's inventory
-            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimIngredient")) {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimIngredient (ID INTEGER PRIMARY KEY, IngredientName VARCHAR, Category VARCHAR, Perishable INT, EstimatedPerishDay INT(4))");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground cinnamon', 'Condiment', 0, NULL)");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('eggs', 'Meat', 1, 14)");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground beef', 'Meat', 1, 14)");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('strawberry', 'Fruit', 1, 5)");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('steak', 'Meat', 1, 14)");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('asparagus', 'Vegetable', 1, 5)");
-                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('peach', 'Fruit', 1, 10)");
-            }
+//            // Create schema and data for table that saves ingredients within app's inventory
+//            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimIngredient")) {
+//                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimIngredient (ID INTEGER PRIMARY KEY, IngredientName VARCHAR, Category VARCHAR, Perishable INT, EstimatedPerishDay INT(4))");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground cinnamon', 'Condiment', 0, NULL)");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('eggs', 'Meat', 1, 14)");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground beef', 'Meat', 1, 14)");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('strawberry', 'Fruit', 1, 5)");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('steak', 'Meat', 1, 14)");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('asparagus', 'Vegetable', 1, 5)");
+//                sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('peach', 'Fruit', 1, 10)");
+//            }
 
             // Create schema and data for table that saves recipes within app's inventory
-//            sqLiteDatabase.execSQL("DROP TABLE DimRecipe");
+            sqLiteDatabase.execSQL("DROP TABLE DimRecipe");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimRecipe")) {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INTEGER)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INTEGER, inPlan INTEGER)");
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("id", 47950);
                 contentValues.put("title", "Cinnamon Apple Crisp");
@@ -98,13 +98,33 @@ public class MainActivity extends AppCompatActivity {
                 contentValues.put("usedIngredientCount", 1);
                 contentValues.put("missedIngredientCount", 2);
                 contentValues.put("likes", 35);
+                contentValues.put("inPlan", 1);
                 sqLiteDatabase.insert("DimRecipe", null, contentValues);
 
             }
 
-            // Create view showing all items expiring within 3 days
+            // Create schema and dummy data for table that saves recipes and corresponding ingredients within app's inventory
+//            sqLiteDatabase.execSQL("DROP TABLE FactRecipeIngredient");
+            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactRecipeIngredient")) {
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactRecipeIngredients (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, amount INTEGER, unit VARCHAR, name VARCHAR, recipeId INTEGER, available INTEGER)");
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("id", 9003);
+                contentValues.put("amount", 6.0);
+                contentValues.put("unit", "cups");
+                contentValues.put("name", "apples");
+                contentValues.put("recipeId", 47950);
+                contentValues.put("available", 0);
+                sqLiteDatabase.insert("FactIngredientRecipe", null, contentValues);
+            }
+
+            // Create view showing all items with time till expiration
             sqLiteDatabase.execSQL("DROP VIEW IF EXISTS ItemsExpDays");
             sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (ID, IngredientName, TimeDelta, ImageBP, Amount, Category) AS SELECT ID, IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageBP, Amount, Category FROM FactFridge WHERE InFridge = 1;");
+
+            // Create view showing all ingredients that need shopping (in plan recipe, not in fridge)
+//            sqLiteDatabase.execSQL("DROP VIEW IF EXISTS IngredientsToShop");
+//            sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS IngredientsToShop (IngredientID, RecipeID, IngredientName, RecipeName) AS SELECT ID, IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageBP, Amount, Category FROM FactFridge WHERE InFridge = 1;");
+
 
             Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM DimRecipe", null);
             int IngredientNameIndex = c.getColumnIndex("title");

@@ -9,4 +9,8 @@ public class RateList {
     public int usedIngredientCount;
     public int missedIngredientCount;
     public String likes;
+
+    public Ingredient missedIngredients;
+    public Ingredient usedIngredients;
+
 }

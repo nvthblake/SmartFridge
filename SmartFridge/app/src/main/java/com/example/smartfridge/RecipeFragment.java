@@ -174,13 +174,9 @@ public class RecipeFragment extends Fragment {
                     Log.d("----Rest Response", responseStr);
                     try {
                         JSONArray jsonArray = new JSONArray(responseStr);
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//                            JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
                         RateList[] itemList;
                         itemList = new Gson().fromJson(jsonArray.toString(), RateList[].class);
                         insertData(itemList);
-//                            Log.d("----Json", jsonObject.toString());
-//                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -192,6 +188,7 @@ public class RecipeFragment extends Fragment {
 
             private void insertData(RateList[] itemList) {
                 ContentValues contentValues = new ContentValues();
+                ContentValues cvIngredient = new ContentValues();
 
                 for (int i = 0; i < itemList.length; i++) {
                     contentValues.put("id", ""+itemList[i].id);
@@ -202,6 +199,24 @@ public class RecipeFragment extends Fragment {
                     contentValues.put("missedIngredientCount", itemList[i].missedIngredientCount);
                     contentValues.put("likes", itemList[i].likes);
                     sqLiteDatabase.insert("DimRecipe", null, contentValues);
+//                    for (int p = 0; p <itemList[i].missedIngredients.length; p++) {
+//                        cvIngredient.put("id", ""+itemList[i].missedIngredients[p].id);
+//                        cvIngredient.put("amount", ""+itemList[i].missedIngredients[p].amount);
+//                        cvIngredient.put("unit", ""+itemList[i].missedIngredients[p].unit);
+//                        cvIngredient.put("name", ""+itemList[i].missedIngredients[p].name);
+//                        cvIngredient.put("recipeId", ""+itemList[i].id);
+//                        cvIngredient.put("available", 0);
+//                        sqLiteDatabase.insert("FactRecipeIngredient", null, cvIngredient);
+//                    }
+//                    for (int q = 0; q <itemList[i].usedIngredients.length; q++) {
+//                        cvIngredient.put("id", ""+itemList[i].usedIngredients[q].id);
+//                        cvIngredient.put("amount", ""+itemList[i].usedIngredients[q].amount);
+//                        cvIngredient.put("unit", ""+itemList[i].usedIngredients[q].unit);
+//                        cvIngredient.put("name", ""+itemList[i].usedIngredients[q].name);
+//                        cvIngredient.put("recipeId", ""+itemList[i].id);
+//                        cvIngredient.put("available", 1);
+//                        sqLiteDatabase.insert("FactRecipeIngredient", null, cvIngredient);
+//                    }
                 }
             }
         });
