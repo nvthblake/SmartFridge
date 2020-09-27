@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageButton;
+import android.widget.HorizontalScrollView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +22,7 @@ import android.widget.ImageButton;
  * create an instance of this fragment.
  */
 public class IngredientFragment extends Fragment {
+    HorizontalScrollView scrollView;
     GridView gridView;
     SQLiteDatabase sqLiteDatabase;
     int fridgeCap;
@@ -34,8 +37,8 @@ public class IngredientFragment extends Fragment {
 //    int[] qty = new int[]{1, 2, 3, 10, 4, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,};
     String[] name;
     int[] image;
-    int[] expDate;
     int[] qty;
+    int[] expDate;
     String[] nameExp;
     int[] imageExp;
     private Button btnAll;
@@ -162,6 +165,12 @@ public class IngredientFragment extends Fragment {
         gridView = (GridView) view.findViewById(R.id.ingredientGrid);
         gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(layoutManager);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(nameExp, imageExp, getActivity());
+        recyclerView.setAdapter(adapter);
+
         btnAll = (Button) view.findViewById(R.id.btnAll);
         btnAll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,7 +225,6 @@ public class IngredientFragment extends Fragment {
                 gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
             }
         });
-
 
         // Inflate the layout for this fragment
         return view;

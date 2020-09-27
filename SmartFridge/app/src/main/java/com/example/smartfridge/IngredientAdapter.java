@@ -15,10 +15,10 @@ import org.w3c.dom.Text;
 
 public class IngredientAdapter extends BaseAdapter {
 
-    private final String name[];
-    private final int image[];
-    private final int qty[];
-    private final int exp[];
+    private final String[] name;
+    private final int[] image;
+    private final int[] qty;
+    private final int[] exp;
     private final Context context;
 
     public IngredientAdapter(String[] name, int[] image, int[] qty, int[] exp, Context context) {
