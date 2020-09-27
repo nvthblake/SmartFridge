@@ -5,41 +5,33 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 //    OkHttpClient client = new OkHttpClient();
 
-//    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    //    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TaskProvider taskProvider = new TaskProvider();
         DbBitmapUtility byteFromDrawableConverter = new DbBitmapUtility();
-        String[] ingredientNameStr = new String[]{"strawberry","steak", "asparagus", "peach"};
-        int[] quantityStr = new int[]{1,2,1,4};
+        String[] ingredientNameStr = new String[]{"strawberry", "steak", "asparagus", "peach"};
+        int[] quantityStr = new int[]{1, 2, 1, 4};
         String[] unitStr = new String[]{"Boxes", "Pounds", "Null", "Null"};
         byte[] imageBPArr;
-        String[] expStr = new String[]{"30/09/2020","30/09/2020","30/09/2020","30/09/2020"};
+        String[] expStr = new String[]{"30/09/2020", "30/09/2020", "30/09/2020", "30/09/2020"};
         String[] categoryStr = new String[]{"Fruit", "Meat", "Vegetable", "Fruit"};
 
 
@@ -57,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
             // Create schema for table that saves user's food inventory
 //            sqLiteDatabase.execSQL("DROP TABLE FactFridge");
 //            sqLiteDatabase.execSQL("DELETE FROM FactFridge WHERE ID >= 3");
-            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge"))
-            {
+            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactFridge")) {
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactFridge (ID INTEGER PRIMARY KEY, Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, IngredientName VARCHAR, Amount INT(5), Unit VARCHAR, ImageBP BLOB, InFridge INT(1), ExpirationDate VARCHAR, Category VARCHAR)");
                 ContentValues cv = new ContentValues();
                 Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_baseline_fastfood_50);
@@ -66,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 byte[] img = bos.toByteArray();
 
-                for (int i = 0; i<5; i++) {
+                for (int i = 0; i < 5; i++) {
                     cv.put("IngredientName", ingredientNameStr[i]);
                     cv.put("Amount", quantityStr[i]);
                     cv.put("Unit", unitStr[i]);
@@ -84,8 +75,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create schema and data for table that saves ingredients within app's inventory
-            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimIngredient"))
-            {
+            if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimIngredient")) {
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimIngredient (ID INTEGER PRIMARY KEY, IngredientName VARCHAR, Category VARCHAR, Perishable INT, EstimatedPerishDay INT(4))");
                 sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('ground cinnamon', 'Condiment', 0, NULL)");
                 sqLiteDatabase.execSQL("INSERT INTO DimIngredient (IngredientName, Category, Perishable, EstimatedPerishDay) VALUES ('eggs', 'Meat', 1, 14)");
@@ -123,34 +113,5 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // GET request to find recipes by ingredients
-//        get("https://spoonacular-recipe-food-nutrition-v1.p.rapidapi.com/recipes/findByIngredients?number=5&ranking=1&ignorePantry=false&ingredients=apples%252Cflour%252Csugar", "", new Callback() {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//                Log.d("----Rest Response Fail", e.toString());
-//            }
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                if (response.isSuccessful()) {
-//                    String responseStr = response.body().string();
-//                    Log.d("----Rest Response", responseStr);
-//                } else {
-//                    Log.d("----Rest Response Fail", response.toString());
-//                }
-//            }
-//        });
     }
-
-    // Func: Get request to Spoonacular API
-//    Call get(String url, String json, Callback callback) {
-//        Request request = new Request.Builder()
-//                .url(url)
-//                .get()
-//                .addHeader("x-rapidapi-host", "spoonacular-recipe-food-nutrition-v1.p.rapidapi.com")
-//                .addHeader("x-rapidapi-key", "895ce719e4mshcb836fa18684a5ap1c69f2jsnf7e37492c80d")
-//                .build();
-//        Call call = client.newCall(request);
-//        call.enqueue(callback);
-//        return call;
-//    }
 }
