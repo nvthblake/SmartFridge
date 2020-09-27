@@ -2,8 +2,12 @@ package com.example.smartfridge;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import android.util.Log;
@@ -13,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageButton;
+
+import static java.util.Objects.isNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,8 +42,12 @@ public class IngredientFragment extends Fragment {
     int[] image;
     int[] expDate;
     int[] qty;
+    Bitmap[] imageBP;
+    int[] imageNull;
     String[] nameExp;
     int[] imageExp;
+    Bitmap[] imageBPExp;
+    int[] imageNullExp;
     private Button btnAll;
     private Button btnVegetable;
     private Button btnMeat;
@@ -76,9 +86,11 @@ public class IngredientFragment extends Fragment {
         return fragment;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void filterIngredient(String ingreCategory, SQLiteDatabase sqLiteDatabase) {
         String sql;
         String sqlExpSoon;
+        DbBitmapUtility bitmapConverter = new DbBitmapUtility();
 
         if (ingreCategory == "All") {
             sql = "SELECT * FROM ItemsExpDays";
@@ -92,7 +104,7 @@ public class IngredientFragment extends Fragment {
         Cursor c = sqLiteDatabase.rawQuery(sql, null);
         int IngredientNameIndex = c.getColumnIndex("IngredientName");
         int TimeDeltaIndex = c.getColumnIndex("TimeDelta");
-        int ImageIndex = c.getColumnIndex("ImageID");
+        int ImageIndex = c.getColumnIndex("ImageBP");
         int QuantityIndex = c.getColumnIndex("Amount");
         int CategoryIndex = c.getColumnIndex("Category");
 
@@ -102,17 +114,24 @@ public class IngredientFragment extends Fragment {
         image = new int[fridgeCap];
         expDate = new int[fridgeCap];
         qty = new int[fridgeCap];
+        imageBP = new Bitmap[fridgeCap];
+        imageNull = new int[fridgeCap];
 
         int i = 0;
         c.moveToFirst();
 
         while (!c.isAfterLast()) {
-            Log.i("Food ", c.getString(IngredientNameIndex));
-//            Log.i("Category ", c.getString(CategoryIndex));
             name[i] = c.getString(IngredientNameIndex);
             image[i] = R.drawable.ic_baseline_fastfood_50;
             expDate[i] = c.getInt(TimeDeltaIndex);
             qty[i] = c.getInt(QuantityIndex);
+            if (c.isNull(ImageIndex)) {
+                imageBP[i] = BitmapFactory.decodeResource(getResources(), R.drawable.ic_baseline_fastfood_50);
+                imageNull[i] = 1;
+            } else {
+                imageBP[i] = bitmapConverter.getImage(c.getBlob(ImageIndex));
+                imageNull[i] = 0;
+            }
             i++;
             c.moveToNext();
         }
@@ -121,12 +140,14 @@ public class IngredientFragment extends Fragment {
         // Update items expiring soon
         Cursor cExp = sqLiteDatabase.rawQuery(sqlExpSoon, null);
         int IngredientNameIndexExp = c.getColumnIndex("IngredientName");
-        int ImageIndexExp = c.getColumnIndex("ImageID");
+        int ImageIndexExp = c.getColumnIndex("ImageBP");
 
         fridgeCapExp = cExp.getCount();
 
         nameExp = new String[fridgeCapExp];
         imageExp = new int[fridgeCapExp];
+        imageBPExp = new Bitmap[fridgeCapExp];
+        imageNullExp = new int[fridgeCapExp];
 
         int iExp = 0;
         cExp.moveToFirst();
@@ -134,6 +155,14 @@ public class IngredientFragment extends Fragment {
         while (!cExp.isAfterLast()) {
             nameExp[iExp] = cExp.getString(IngredientNameIndexExp);
             imageExp[iExp] = R.drawable.ic_baseline_fastfood_50;
+            if (cExp.isNull(ImageIndex)) {
+                imageBPExp[iExp] = BitmapFactory.decodeResource(getResources(), R.drawable.ic_baseline_fastfood_50);
+                imageNullExp[iExp] = 1;
+            } else {
+                imageBPExp[iExp] = bitmapConverter.getImage(cExp.getBlob(ImageIndex));
+                imageNullExp[iExp] = 0;
+            }
+
             iExp++;
             cExp.moveToNext();
         }
@@ -151,6 +180,7 @@ public class IngredientFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -160,7 +190,7 @@ public class IngredientFragment extends Fragment {
         filterIngredient("All", sqLiteDatabase);
 
         gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-        gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+        gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
 
         btnAll = (Button) view.findViewById(R.id.btnAll);
         btnAll.setOnClickListener(new View.OnClickListener() {
@@ -168,7 +198,7 @@ public class IngredientFragment extends Fragment {
             public void onClick(View v) {
                 filterIngredient("All", sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
             }
         });
         btnVegetable = (Button) view.findViewById(R.id.btnVegetable);
@@ -177,7 +207,7 @@ public class IngredientFragment extends Fragment {
             public void onClick(View v) {
                 filterIngredient(btnVegetable.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
             }
         });
         btnMeat = (Button) view.findViewById(R.id.btnMeat);
@@ -186,7 +216,7 @@ public class IngredientFragment extends Fragment {
             public void onClick(View v) {
                 filterIngredient(btnMeat.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
             }
         });
         btnCondiment = (Button) view.findViewById(R.id.btnCondiment);
@@ -195,7 +225,7 @@ public class IngredientFragment extends Fragment {
             public void onClick(View v) {
                 filterIngredient(btnCondiment.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
             }
         });
         btnSnack = (Button) view.findViewById(R.id.btnSnack);
@@ -204,7 +234,7 @@ public class IngredientFragment extends Fragment {
             public void onClick(View v) {
                 filterIngredient(btnSnack.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
             }
         });
         btnFruit = (Button) view.findViewById(R.id.btnFruit);
@@ -213,7 +243,7 @@ public class IngredientFragment extends Fragment {
             public void onClick(View v) {
                 filterIngredient(btnFruit.getText().toString(), sqLiteDatabase);
                 gridView = (GridView) view.findViewById(R.id.ingredientGrid);
-                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity()));
+                gridView.setAdapter(new IngredientAdapter(name, image, qty, expDate, getActivity(), imageBP, imageNull));
             }
         });
 

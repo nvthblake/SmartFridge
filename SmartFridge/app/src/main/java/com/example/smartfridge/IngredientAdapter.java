@@ -1,6 +1,7 @@
 package com.example.smartfridge;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,13 +21,17 @@ public class IngredientAdapter extends BaseAdapter {
     private final int qty[];
     private final int exp[];
     private final Context context;
+    private final Bitmap[] imageBP;
+    private final int[] imageNull;
 
-    public IngredientAdapter(String[] name, int[] image, int[] qty, int[] exp, Context context) {
+    public IngredientAdapter(String[] name, int[] image, int[] qty, int[] exp, Context context, Bitmap[] imageBP, int[] imageNull) {
         this.name = name;
         this.image = image;
         this.qty = qty;
         this.exp = exp;
         this.context = context;
+        this.imageBP = imageBP;
+        this.imageNull = imageNull;
     }
 
 //    public IngredientAdapter(View view) {
@@ -64,7 +69,11 @@ public class IngredientAdapter extends BaseAdapter {
         TextView ingredientName = (TextView)convertView.findViewById(R.id.ingre_name);
         TextView ingredientQty = (TextView)convertView.findViewById(R.id.ingre_exp);
 
-        ingredientImage.setImageResource(image[position]);
+        if (imageNull[position] == 0) {
+            ingredientImage.setImageBitmap(imageBP[position]);
+        } else {
+            ingredientImage.setImageResource(image[position]);
+        }
         ingredientName.setText(name[position]);
         ingredientQty.setText("QTY: " + qty[position]);
 
