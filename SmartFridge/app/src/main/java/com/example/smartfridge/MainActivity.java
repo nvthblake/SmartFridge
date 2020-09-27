@@ -57,16 +57,16 @@ public class MainActivity extends AppCompatActivity {
 //                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
 //                byte[] img = bos.toByteArray();
 
-                for (int i = 0; i < 5; i++) {
-                    cv.put("IngredientName", ingredientNameStr[i]);
-                    cv.put("Amount", quantityStr[i]);
-                    cv.put("Unit", unitStr[i]);
-                    cv.put("InFridge", 1);
-                    cv.put("ExpirationDate", expStr[i]);
-                    cv.put("Category", categoryStr[i]);
-//                    cv.put("ImageBP", img);
-                    sqLiteDatabase.insert("FactFridge", null, cv);
-                }
+//                for (int i = 0; i < 5; i++) {
+//                    cv.put("IngredientName", ingredientNameStr[i]);
+//                    cv.put("Amount", quantityStr[i]);
+//                    cv.put("Unit", unitStr[i]);
+//                    cv.put("InFridge", 1);
+//                    cv.put("ExpirationDate", expStr[i]);
+//                    cv.put("Category", categoryStr[i]);
+////                    cv.put("ImageBP", img);
+//                    sqLiteDatabase.insert("FactFridge", null, cv);
+//                }
 
 //                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('strawberry',3, 'box', NULL, 1, '30/09/2020', 'Fruit')");
 //                sqLiteDatabase.execSQL("INSERT INTO FactFridge (IngredientName, Amount, Unit, ImageBP, InFridge, ExpirationDate, Category) VALUES ('steak',2, 'lbs', NULL, 1, '30/09/2020', 'Meat')");
@@ -104,7 +104,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create schema and dummy data for table that saves recipes and corresponding ingredients within app's inventory
-            sqLiteDatabase.execSQL("DROP TABLE FactRecipeIngredients");
+//            sqLiteDatabase.execSQL("DROP TABLE FactRecipeIngredients");
+//            sqLiteDatabase.execSQL("DROP TABLE IF EXISTS FactRecipeIngredients");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "FactRecipeIngredients")) {
                 sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS FactRecipeIngredients (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, amount DECIMAL(10,5), unit VARCHAR, name VARCHAR, recipeId INTEGER, available INTEGER, onShopList INTEGER)");
                 ContentValues contentValues = new ContentValues();
