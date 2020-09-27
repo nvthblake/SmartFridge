@@ -89,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
             // Create schema and data for table that saves recipes within app's inventory
 //            sqLiteDatabase.execSQL("DROP TABLE DimRecipe");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimRecipe")) {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INTEGER)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INTEGER)");
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("id", 47950);
                 contentValues.put("title", "Cinnamon Apple Crisp");

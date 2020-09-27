@@ -3,6 +3,7 @@ package com.example.smartfridge;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -111,19 +112,42 @@ public class RecipeFragment extends Fragment {
         String finalIngredientStr = ingredientStr;
         Map<String, String> params = new HashMap<String, String>() {{
             put("ingredients", finalIngredientStr);
-            put("number", "1");
+            put("number", "4");
             put("ranking", "1");
         }};
         findRecipesByIngredients(params);
 
+        // Generate meal plan based on DimRecipe
+        String sqlRecipe = "SELECT DISTINCT title, imageType, image FROM DimRecipe";
+        Cursor c2 = sqLiteDatabase.rawQuery(sqlRecipe, null);
+        int titleIndex = c2.getColumnIndex("title");
+        int imageTypeIndex = c2.getColumnIndex("imageType");
+        int imageIndex = c2.getColumnIndex("image");
+
+        int mealLength = c2.getCount();
+        MealData[] mealData = new MealData[mealLength];
+        int m = 0;
+        c2.moveToFirst();
+
+        while (!c2.isAfterLast()) {
+            mealData[m] = new MealData(c2.getString(titleIndex), c2.getString(imageTypeIndex), c2.getString(imageIndex));
+            m++;
+            c2.moveToNext();
+        }
+        c2.close();
+
+
         // Generate meal planner on UI
-        MealData[] mealData = new MealData[]{
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
-        };
+//        MealData[] mealData = new MealData[]{
+//                new MealData("meal1", "descp1", R.drawable.ava),
+//                new MealData("meal2", "descp2", R.drawable.ava),
+//                new MealData("meal1", "descp1", R.drawable.ava),
+//                new MealData("meal2", "descp2", R.drawable.ava),
+//                new MealData("meal1", "descp1", R.drawable.ava),
+//                new MealData("meal2", "descp2", R.drawable.ava),
+//                new MealData("meal1", "descp1", R.drawable.ava),
+//                new MealData("meal2", "descp2", R.drawable.ava)
+//        };
         MealAdapter myMovieAdapter = new MealAdapter(mealData);
         recyclerView.setAdapter(myMovieAdapter);
 
@@ -150,14 +174,13 @@ public class RecipeFragment extends Fragment {
                     Log.d("----Rest Response", responseStr);
                     try {
                         JSONArray jsonArray = new JSONArray(responseStr);
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
-                            RateList[] itemList;
-                            itemList = new Gson().fromJson(jsonArray.toString(), RateList[].class);
-                            insertData(itemList);
-
-                            Log.d("----Json", jsonObject.toString());
-                        }
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//                            JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
+                        RateList[] itemList;
+                        itemList = new Gson().fromJson(jsonArray.toString(), RateList[].class);
+                        insertData(itemList);
+//                            Log.d("----Json", jsonObject.toString());
+//                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
