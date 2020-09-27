@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ingredientFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".IngredientFragment"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    tools:context=".IngredientFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -56,65 +56,65 @@
                     android:id="@+id/btnAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="#ffffff"
-                    android:textSize="10dp"
                     android:background="@drawable/roundedbutton"
-                    android:text="All" />
+                    android:text="All"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnVegetable"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="10dp"
-                    android:background="@drawable/roundedbutton"
                     android:layout_weight="1"
-                    android:text="Vegetable" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Vegetable"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnMeat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="10dp"
-                    android:background="@drawable/roundedbutton"
                     android:layout_weight="1"
-                    android:text="Meat" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Meat"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnFruit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="10dp"
-                    android:background="@drawable/roundedbutton"
                     android:layout_weight="1"
-                    android:text="Fruit" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Fruit"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnCondiment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="10dp"
-                    android:background="@drawable/roundedbutton"
                     android:layout_weight="1"
-                    android:text="Condiment" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Condiment"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
                 <Button
                     android:id="@+id/btnSnack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:textColor="#ffffff"
-                    android:textSize="10dp"
-                    android:background="@drawable/roundedbutton"
                     android:layout_weight="1"
-                    android:text="Snack" />
+                    android:background="@drawable/roundedbutton"
+                    android:text="Snack"
+                    android:textColor="#ffffff"
+                    android:textSize="10dp" />
 
             </LinearLayout>
         </HorizontalScrollView>
@@ -123,8 +123,8 @@
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
             android:text="Expiring Soon!"
             android:textSize="23dp"
             app:layout_constraintStart_toStartOf="@+id/horizontalScrollView"
@@ -132,11 +132,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
-            android:layout_margin="4dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_margin="4dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
             android:orientation="horizontal"
             android:padding="5dp"
             app:layout_constraintEnd_toEndOf="parent"
