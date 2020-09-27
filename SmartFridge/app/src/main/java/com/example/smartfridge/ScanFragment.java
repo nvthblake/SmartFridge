@@ -240,6 +240,10 @@ public class ScanFragment extends Fragment {
                 ingredientName.getText().clear();
                 quantity.getText().clear();
                 date.getText().clear();
+                imgCapture.setImageBitmap(null);
+                imgCapture.setImageResource(R.drawable.addimage);
+                bp.recycle();
+                ba = new byte[0];
 
             }
         });
