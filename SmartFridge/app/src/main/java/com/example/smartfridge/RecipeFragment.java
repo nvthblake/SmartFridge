@@ -107,7 +107,7 @@ public class RecipeFragment extends Fragment {
 
 
         // Request api get
-        String finalIngredientStr = ingredientStr.substring(0, ingredientStr.length() - 2);
+        String finalIngredientStr = ingredientStr;
         Map<String, String> params = new HashMap<String, String>() {{
             put("ingredients", finalIngredientStr);
             put("number", "1");
@@ -155,7 +155,7 @@ public class RecipeFragment extends Fragment {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = new JSONObject(jsonArray.get(i).toString());
                             RateList[] itemList;
-                            itemList = new Gson().fromJson(jsonObject.toString(), RateList[].class);
+                            itemList = new Gson().fromJson(jsonArray.toString(), RateList[].class);
                             insertData(itemList);
 
                             Log.d("----Json", jsonObject.toString());

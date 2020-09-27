@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             // Create schema and data for table that saves recipes within app's inventory
 //            sqLiteDatabase.execSQL("DROP TABLE DimRecipe");
             if (taskProvider.checkForTableNotExists(sqLiteDatabase, "DimRecipe")) {
-                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INT)");
+                sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS DimRecipe (id INTEGER, title VARCHAR, image VARCHAR, imageType VARCHAR, usedIngredientCount INTEGER, missedIngredientCount INTEGER, likes INTEGER)");
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("id", 47950);
                 contentValues.put("title", "Cinnamon Apple Crisp");
@@ -116,18 +116,18 @@ public class MainActivity extends AppCompatActivity {
             sqLiteDatabase.execSQL("DROP VIEW IF EXISTS ItemsExpDays");
             sqLiteDatabase.execSQL("CREATE VIEW IF NOT EXISTS ItemsExpDays (ID, IngredientName, TimeDelta, ImageBP, Amount, Category) AS SELECT ID, IngredientName, JulianDay(substr(ExpirationDate, 7) || \"-\" || substr(ExpirationDate,4,2)  || \"-\" || substr(ExpirationDate, 1,2)) - JulianDay('now'), ImageBP, Amount, Category FROM FactFridge WHERE InFridge = 1;");
 
-//            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM ItemsExpDays", null);
-//            int IngredientNameIndex = c.getColumnIndex("IngredientName");
+            Cursor c = sqLiteDatabase.rawQuery("SELECT * FROM DimRecipe", null);
+            int IngredientNameIndex = c.getColumnIndex("title");
 //            int TimeDeltaIndex = c.getColumnIndex("TimeDelta");
-//            c.moveToFirst();
-//
-//            while (c != null) {
-//                Log.i("IngredientName ", c.getString(IngredientNameIndex));
+            c.moveToFirst();
+
+            while (c != null) {
+                Log.i("Recipe Title ", c.getString(IngredientNameIndex));
 //                Log.i("TimeDelta ", Integer.toString(c.getInt(TimeDeltaIndex)));
-//
-//                c.moveToNext();
-//            }
-//            c.close();
+
+                c.moveToNext();
+            }
+            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
