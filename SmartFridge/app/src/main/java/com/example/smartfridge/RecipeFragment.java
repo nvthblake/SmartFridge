@@ -82,6 +82,7 @@ public class RecipeFragment extends Fragment {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -117,14 +118,11 @@ public class RecipeFragment extends Fragment {
 
         // Generate meal planner on UI
         MealData[] mealData = new MealData[]{
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava),
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava),
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava),
-                new MealData("meal1", "descp1", R.drawable.ava),
-                new MealData("meal2", "descp2", R.drawable.ava)
+                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
+                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
+                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
+                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
+                new MealData("meal1", "descp1", "https://spoonacular.com/recipeImages/47950-312x231.jpg"),
         };
         MealAdapter myMovieAdapter = new MealAdapter(mealData);
         recyclerView.setAdapter(myMovieAdapter);

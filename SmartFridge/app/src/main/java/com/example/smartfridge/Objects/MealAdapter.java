@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.smartfridge.R;
+import com.squareup.picasso.Picasso;
 
 public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
     MealData[] mealData;
@@ -32,7 +33,10 @@ public class MealAdapter extends RecyclerView.Adapter<MealAdapter. ViewHolder> {
         final MealData mealDataList = mealData[position];
         holder.textMealName.setText(mealDataList.getMealName());
         holder.textMealDescp.setText(mealDataList.getMealDescription());
-        holder.mealImage.setImageResource(mealDataList.getMealImage());
+//        holder.mealImage.setImageBitmap(mealDataList.getMealImage());
+        Picasso.with(holder.mealImage.getContext())
+                .load(mealDataList.getMealImage())
+                .into(holder.mealImage);
     }
 
     @Override
