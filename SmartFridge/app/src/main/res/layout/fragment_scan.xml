@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:src="@drawable/addimage"
             android:scaleType="fitCenter"
+            android:background="@color/colorBackground"
             android:id="@+id/imageCapture" />
 
         <LinearLayout
@@ -133,6 +134,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="60dp"
+            android:layout_marginRight="80dp"
+            android:layout_marginLeft="80dp"
             android:background="@drawable/roundedbutton"
             android:text="Save Item"
             android:textColor="#ffffff"
