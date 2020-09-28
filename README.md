@@ -4,7 +4,6 @@
 In the United States, food waste is estimated at between 30-40% of the food supply (figure from the FDA). Our biggest inspiration stems from our concern about the environment and how we can make simple lifestyle changes be more responsible about our consumption. SmartFridge app is a solution that makes meal-planning convenient, intuitive and sustainable. We create a logistic app that lets users monitor their food resources with ease. By scanning users' food inventory at home via picture input, the app will classify its users' food into categories, come up with suggested cooking recipes depending on the available food, prioritize food that will go bad soon, and send out alerts once the user's fridge is running low or going to expire. With the aforementioned features, SmartFridge app is the all-in-one solution for people to keep track of their fridge, have a more diverse meal plan, and reduce personal food waste.
 
 # Demo Prototype
-![Thumbnail](img/thumbnail.png)
 [![Demo Video](img/thumbnail.png)](https://youtu.be/j6zuf78dDC0)
 
 # What it does
